@@ -9,7 +9,9 @@ export default function App() {
         </button>
         */
         <a
-          href="https://google.com"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSc1LbKtAVhjAQXQP46onEGRBW5gPPx8EciIUyluoCqdB3IoIQ/viewform?usp=header"
+          target="_blank"
+          rel="noopener noreferrer"
           className="px-4 py-2 rounded-xl bg-gray-900 text-white hover:bg-gray-700 transition"
         >
           Join Waitlist
@@ -28,12 +30,22 @@ export default function App() {
         </p>
 
         <div className="mt-8 flex gap-4">
-          <button className="px-6 py-3 text-lg rounded-xl bg-gray-900 text-white hover:bg-gray-700 transition">
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSc1LbKtAVhjAQXQP46onEGRBW5gPPx8EciIUyluoCqdB3IoIQ/viewform?usp=header"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-6 py-3 text-lg rounded-xl bg-gray-900 text-white hover:bg-gray-700 transition"
+          >
             Get Early Access
-          </button>
-          <button className="px-6 py-3 text-lg rounded-xl border border-gray-400 hover:bg-gray-100 transition">
+          </a>
+          <a
+            href="/Nostia-deck.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-6 py-3 text-lg rounded-xl border border-gray-400 hover:bg-gray-100 transition"
+          >
             Learn More
-          </button>
+          </a>
         </div>
 
         <div className="mt-16 w-full max-w-4xl bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
