@@ -4,10 +4,6 @@ export default function App() {
       {/* Navigation */}
       <header className="w-full py-6 px-8 flex justify-between items-center bg-white shadow-sm">
         <h1 className="text-2xl font-bold text-gray-900">Nostia</h1>
-        /*<button className="px-4 py-2 rounded-xl bg-gray-900 text-white hover:bg-gray-700 transition">
-          Join Waitlist
-        </button>
-        */
         <a
           href="https://docs.google.com/forms/d/e/1FAIpQLSc1LbKtAVhjAQXQP46onEGRBW5gPPx8EciIUyluoCqdB3IoIQ/viewform?usp=header"
           target="_blank"
