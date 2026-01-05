@@ -27,7 +27,7 @@ export default function App() {
 
         <div className="flex justify-center gap-4">
           <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSc1LbKtAVhjAQXQP46onEGRBW5gPPx8EciIUyluoCqdB3IoIQ/viewform?usp=header"
+            href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=4AlymbMJI0aaTXavpEpnXMRTvEZQ7UpFm0cv0XYdu35UNTNGM05USFgxQUpXTlAySFgxRzdXVlZONC4u"
             target="_blank"
             rel="noopener noreferrer"
             className="px-6 py-3 bg-white text-black rounded-lg font-medium hover:bg-white/80 transition"
