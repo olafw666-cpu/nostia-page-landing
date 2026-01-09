@@ -5,7 +5,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#0e0e0f] text-white flex flex-col items-center px-6 py-20 font-sans">
       <header className="w-full max-w-5xl flex justify-between items-center mb-24">
-        <img src={logo} alt="Nostia" className="h-25" />
+        <img src={logo} alt="Nostia" className="h-16" />
         <a
           href="/Nostia-deck.pdf"
           target="_blank"
