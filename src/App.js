@@ -1,10 +1,11 @@
 import React from "react";
+import logo from "./logo.png";
 
 export default function App() {
   return (
     <div className="min-h-screen bg-[#0e0e0f] text-white flex flex-col items-center px-6 py-20 font-sans">
       <header className="w-full max-w-5xl flex justify-between items-center mb-24">
-        <h1 className="text-2xl tracking-tight font-semibold">Nostia</h1>
+        <img src={logo} alt="Nostia" className="h-10" />
         <a
           href="/Nostia-deck.pdf"
           target="_blank"
