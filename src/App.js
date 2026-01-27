@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "./logo-transparent.png";
+import logo from "./nostia-transparent.png";
 
 export default function App() {
   return (
