@@ -60,10 +60,10 @@ export default function Newsletter() {
         {/* LinkedIn Posts */}
         <section>
           <h3 className="text-2xl font-semibold mb-6 text-center">LinkedIn Updates</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex justify-center">
             {/* Add LinkedIn embed codes here */}
             {/* To get embed code: Go to LinkedIn post > Click "..." > Copy embed code */}
-            <div className="border border-white/10 p-6 rounded-lg bg-white/5 text-center">
+            <div className="border border-white/10 p-8 rounded-lg bg-white/5 text-center w-full max-w-md">
               <p className="text-white/40">LinkedIn posts coming soon</p>
               <p className="text-white/30 text-sm mt-2">
                 Visit our <a href="https://www.linkedin.com/company/nostia/posts/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">LinkedIn page</a> for updates
@@ -75,10 +75,10 @@ export default function Newsletter() {
         {/* Instagram Posts */}
         <section>
           <h3 className="text-2xl font-semibold mb-6 text-center">Instagram Updates</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex justify-center">
             {/* Add Instagram embed codes here */}
             {/* To get embed code: Go to Instagram post > Click "..." > Embed > Copy embed code */}
-            <div className="border border-white/10 p-6 rounded-lg bg-white/5 text-center">
+            <div className="border border-white/10 p-8 rounded-lg bg-white/5 text-center w-full max-w-md">
               <p className="text-white/40">Instagram posts coming soon</p>
               <p className="text-white/30 text-sm mt-2">
                 Visit our <a href="https://www.instagram.com/projectnostia/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">Instagram page</a> for updates
