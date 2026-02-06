@@ -1,12 +1,14 @@
 import React from "react";
+import owImage from "../OW.jpg";
 
 // Team member data
 const teamMembers = [
   {
     name: "Olaf Woodall",
     role: "Founder",
-    image: "OW.jpeg",
-    description: "Olaf enjoys watching Instagram reels and YouTube in his freetime. Additionally, he is a really good chef."
+    image: owImage,
+    hasImage: true,
+    description: "I am a driven individual driven by a dream of improving humanity via the invention, investment, and improvement of current technology. I have expertise in leadership, ML development, marketing, full stack development. In my free time I like to hike and ski."
   },
   {
     name: "Will Chadwick",
@@ -66,9 +68,13 @@ export default function About() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {teamMembers.map((member, index) => (
             <div key={index} className="border border-white/10 p-6 rounded-lg bg-white/5 text-center">
-              {/* Team Member Photo Placeholder */}
+              {/* Team Member Photo */}
               <div className="w-32 h-32 mx-auto mb-4 rounded-full border border-white/20 bg-white/10 flex items-center justify-center overflow-hidden">
-                <span className="text-white/30 text-xs">{member.image}</span>
+                {member.hasImage ? (
+                  <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-white/30 text-xs">{member.image}</span>
+                )}
               </div>
               <h4 className="font-semibold text-lg">{member.name}</h4>
               <p className="text-white/60 text-sm mb-3">{member.role}</p>
