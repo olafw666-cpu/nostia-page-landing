@@ -20,18 +20,6 @@ const teamMembers = [
     description: "I'm Will. I am a motivated and ambitious person with a lot of goals to create and innovate in the new age of artificial intelligence and the internet. I have experience in leadership and creative thinking along with networking skills that I hope to continue to deploy working with Nostia to create a product that can help shape the future of travel and planning. In my free time I like to ski and go on adventures."
   },
   {
-    name: "Joey Hannon",
-    role: "App Development",
-    image: "JH.jpeg",
-    description: "Joey Hannon Description"
-  },
-  {
-    name: "Shreya",
-    role: "Legal",
-    image: "S.jpeg",
-    description: "Shreya Description"
-  },
-  {
     name: "Robbie Settle",
     role: "Front End Developer",
     image: rsImage,
