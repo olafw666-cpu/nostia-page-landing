@@ -1,6 +1,7 @@
 import React from "react";
 import owImage from "../OW.jpg";
 import wcImage from "../WC.jpg";
+import rsImage from "../RS.jpg";
 
 // Team member data
 const teamMembers = [
@@ -33,8 +34,9 @@ const teamMembers = [
   {
     name: "Robbie Settle",
     role: "Front End Developer",
-    image: "RS.jpeg",
-    description: "Robbie Description"
+    image: rsImage,
+    hasImage: true,
+    description: "I'm Robbie and my primary interest is in cars. I love going to track days and scenic drives in the canyons. I am currently in the process of restoring a 1974 Datsun 620 project car as a minitruck. I enjoy spending time working on my cars and hope to make a career in the automotive industry in the future."
   }
 ];
 
