@@ -43,7 +43,7 @@ export default function Newsletter() {
           Follow on LinkedIn
         </a>
         <a
-          href="https://www.instagram.com/projectnostia/"
+          href="https://www.instagram.com/nostiatravel/"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 px-4 py-2 border border-white/30 rounded-lg hover:bg-white/10 transition"
@@ -81,7 +81,7 @@ export default function Newsletter() {
             <div className="border border-white/10 p-8 rounded-lg bg-white/5 text-center w-full max-w-md">
               <p className="text-white/40">Instagram posts coming soon</p>
               <p className="text-white/30 text-sm mt-2">
-                Visit our <a href="https://www.instagram.com/projectnostia/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">Instagram page</a> for updates
+                Visit our <a href="https://www.instagram.com/nostiatravel/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">Instagram page</a> for updates
               </p>
             </div>
           </div>
