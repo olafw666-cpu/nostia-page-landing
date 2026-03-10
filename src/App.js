@@ -4,6 +4,7 @@ import logo from "./nostia-transparent.png";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Newsletter from "./pages/Newsletter";
+import Terms from "./pages/Terms";
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -42,6 +43,9 @@ export default function App() {
             <Link to="/newsletter" className="text-white/80 hover:text-white transition">
               Newsletter
             </Link>
+            <Link to="/terms" className="text-white/80 hover:text-white transition">
+              Terms of Service
+            </Link>
             <a
               href="/Nostia-deck.pdf"
               target="_blank"
@@ -64,6 +68,9 @@ export default function App() {
               <Link to="/newsletter" className="text-white/80 hover:text-white transition" onClick={() => setMenuOpen(false)}>
                 Newsletter
               </Link>
+              <Link to="/terms" className="text-white/80 hover:text-white transition" onClick={() => setMenuOpen(false)}>
+                Terms of Service
+              </Link>
               <a
                 href="/Nostia-deck.pdf"
                 target="_blank"
@@ -82,6 +89,7 @@ export default function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/newsletter" element={<Newsletter />} />
+          <Route path="/terms" element={<Terms />} />
         </Routes>
 
         <footer className="mt-16 sm:mt-32 text-white/40 text-sm">
