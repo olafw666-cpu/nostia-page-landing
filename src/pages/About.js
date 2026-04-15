@@ -34,6 +34,7 @@ const teamMembers = [
     role: "Backend Developer",
     image: jhImage,
     hasImage: true,
+    imageClassName: "w-full h-full object-cover scale-125 translate-y-2",
     description: "I am a focused individual with a dream to improve humanity in any way possible. I have expertise in machine learning, app development, backend development, and many other things. In my free time I like to hike and enjoy nature."
   },
   {
@@ -80,7 +81,7 @@ export default function About() {
               {/* Team Member Photo */}
               <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-4 rounded-full border border-white/20 bg-white/10 flex items-center justify-center overflow-hidden">
                 {member.hasImage ? (
-                  <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                  <img src={member.image} alt={member.name} className={member.imageClassName || "w-full h-full object-cover"} />
                 ) : (
                   <span className="text-white/30 text-xs">{member.image}</span>
                 )}
