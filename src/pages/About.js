@@ -3,6 +3,8 @@ import owImage from "../OW.jpg";
 import wcImage from "../WC.jpg";
 import rsImage from "../RS.jpg";
 import aboutImage from "../NostiaAbout.png";
+import sjImage from "../shreya.png";
+import jhImage from "../joehannon.png";
 
 // Team member data
 const teamMembers = [
@@ -26,6 +28,20 @@ const teamMembers = [
     image: rsImage,
     hasImage: true,
     description: "I'm Robbie and my primary interest is in cars. I love going to track days and scenic drives in the canyons. I am currently in the process of restoring a 1974 Datsun 620 project car as a minitruck. I enjoy spending time working on my cars and hope to make a career in the automotive industry in the future."
+  },
+  {
+    name: "Joe Hannon",
+    role: "Backend Developer",
+    image: jhImage,
+    hasImage: true,
+    description: "I am a focused individual with a dream to improve humanity in any way possible. I have expertise in machine learning, app development, backend development, and many other things. In my free time I like to hike and enjoy nature."
+  },
+  {
+    name: "Shreya Joglekar",
+    role: "Director (Non-Technical and Legal)",
+    image: sjImage,
+    hasImage: true,
+    description: "Currently an undergraduate at New York University. I oversee non-technical and legal operations, working to build the structural foundation that supports growth. I am interested in how business and economic expansion can create a meaningful, real-world impact. In my free time, I love to play music and explore new countries."
   }
 ];
 
