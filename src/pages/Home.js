@@ -118,8 +118,8 @@ const features = [
 
 const milestones = [
   { label: "Beta / MVP complete", detail: "The core app is built and ready", status: "done" },
-  { label: "Closed beta", detail: "Invite-only user testing", status: "now" },
-  { label: "Public launch", detail: "Rolling out city by city", status: "next" },
+  { label: "Closed beta", detail: "Invite-only user testing complete", status: "done" },
+  { label: "Public launch", detail: "Live on the App Store, rolling out city by city", status: "now" },
 ];
 
 export default function Home() {
@@ -151,7 +151,7 @@ export default function Home() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-400" />
             </span>
-            Beta ready — public launch 2026
+            Launching now — rolling out city by city
           </motion.span>
 
           <motion.h1
@@ -360,11 +360,11 @@ export default function Home() {
 
           <div className="relative">
             <h2 className="text-2xl sm:text-4xl font-bold mb-4">
-              Be first in when we open the doors.
+              The doors are opening.
             </h2>
             <p className="text-white/60 max-w-xl mx-auto mb-10">
-              Join early access to help shape Nostia during the closed beta —
-              and be ready the moment we hit the App Store.
+              Nostia is arriving on the App Store, launching city by city. Join
+              early access to be first in line when we reach yours.
             </p>
 
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
