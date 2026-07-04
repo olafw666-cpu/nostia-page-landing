@@ -2,7 +2,6 @@ import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Apple,
-  ArrowRight,
   CalendarX,
   Camera,
   Check,
@@ -19,9 +18,6 @@ import {
 // "Coming soon" placeholder.
 // ─────────────────────────────────────────────────────────────
 const APP_STORE_URL = "https://apps.apple.com/us/app/nostia/id6762099952";
-
-const EARLY_ACCESS_URL =
-  "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=4AlymbMJI0aaTXavpEpnXMRTvEZQ7UpFm0cv0XYdu35UNTNGM05USFgxQUpXTlAySFgxRzdXVlZONC4u";
 
 const stagger = {
   hidden: {},
@@ -174,22 +170,8 @@ export default function Home() {
             the people you actually want to see.
           </motion.p>
 
-          <motion.div
-            variants={fadeUp}
-            className="flex flex-col sm:flex-row justify-center items-center gap-4"
-          >
+          <motion.div variants={fadeUp} className="flex justify-center">
             <AppStoreButton />
-            <motion.a
-              href={EARLY_ACCESS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-white/20 hover:bg-white/10 hover:border-white/40 transition-colors"
-            >
-              Join Early Access
-              <ArrowRight className="w-4 h-4" />
-            </motion.a>
           </motion.div>
 
           <motion.p variants={fadeUp} className="text-white/40 text-sm mt-8">
@@ -362,23 +344,12 @@ export default function Home() {
               The doors are opening.
             </h2>
             <p className="text-white/60 max-w-xl mx-auto mb-10">
-              Nostia is arriving on the App Store, launching city by city. Join
-              early access to be first in line when we reach yours.
+              Nostia is live on the App Store, rolling out city by city.
+              Download it now and be ready when we reach yours.
             </p>
 
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+            <div className="flex justify-center">
               <AppStoreButton />
-              <motion.a
-                href={EARLY_ACCESS_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-white/20 hover:bg-white/10 hover:border-white/40 transition-colors"
-              >
-                Join Early Access
-                <ArrowRight className="w-4 h-4" />
-              </motion.a>
             </div>
 
             <a
