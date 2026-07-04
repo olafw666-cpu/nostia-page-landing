@@ -15,11 +15,10 @@ import {
 } from "lucide-react";
 
 // ─────────────────────────────────────────────────────────────
-// App Store link — set this when the app goes live, e.g.:
-//   const APP_STORE_URL = "https://apps.apple.com/app/nostia/id1234567890";
-// While null, the button renders as a "Coming soon" placeholder.
+// App Store link — while null, the button renders as a
+// "Coming soon" placeholder.
 // ─────────────────────────────────────────────────────────────
-const APP_STORE_URL = null;
+const APP_STORE_URL = "https://apps.apple.com/us/app/nostia/id6762099952";
 
 const EARLY_ACCESS_URL =
   "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=4AlymbMJI0aaTXavpEpnXMRTvEZQ7UpFm0cv0XYdu35UNTNGM05USFgxQUpXTlAySFgxRzdXVlZONC4u";
