@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Newsletter from "./pages/Newsletter";
 import Terms from "./pages/Terms";
+import OlafWoodall from "./pages/OlafWoodall";
 
 const navLinks = [
   { to: "/home", label: "Home" },
@@ -222,6 +223,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/newsletter" element={<Newsletter />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/olaf-woodall" element={<OlafWoodall />} />
           </Routes>
         </div>
 
