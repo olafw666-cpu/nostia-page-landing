@@ -4,6 +4,10 @@
 :root {
   --accent: #2E7D32;
   --accent-soft: #E8F3E9;
+  /* Text/icon colour that sits ON an accent fill. Split out from --text because
+     the accent is dark in light mode and bright in dark mode — one fixed value
+     is unreadable in whichever mode it was not chosen for. */
+  --accent-ink: #FFFFFF;
   --warning: #B45309;
   --danger: #B3261E;
   --info: #1D4ED8;
@@ -25,7 +29,12 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --accent: #4CAF50;
+    /* Was #4CAF50 carrying white text: ~2.3:1, far under the 4.5:1 floor and the
+       exact flashbang the header above warns about. The fill stays bright but
+       now carries near-black ink (~12:1). Same treatment as the emerald button
+       on the marketing site, so the two surfaces read as one product. */
+    --accent: #34D399;
+    --accent-ink: #08120C;
     --accent-soft: #16301A;
     --warning: #F59E0B;
     --danger: #F2645A;
@@ -50,6 +59,20 @@ body {
   color: var(--text);
   -webkit-font-smoothing: antialiased;
 }
+
+/* The stylesheet had NO anchor rule, so every link fell back to the browser
+   defaults — #0000EE unvisited, #551A8B visited — against a near-black card.
+   Unreadable, and the visited state made the same row change colour after a
+   click for no reason the user could act on. */
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+  transition: color .12s ease, border-color .12s ease;
+}
+a:hover { border-bottom-color: var(--accent); }
+a:visited { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
 
 .noscript { padding: 2rem; font-size: 1rem; }
 
@@ -81,7 +104,17 @@ body {
 }
 
 .brand { font-family: var(--mono); font-weight: 800; letter-spacing: .22em; font-size: 15px; }
-.brand span { color: var(--text-3); letter-spacing: .04em; font-weight: 600; display: block; font-size: 11px; margin-top: 4px; }
+/* Reads as a product label beside the wordmark rather than an orphaned word
+   under it — which is how "Orgs" looked once it replaced a longer subtitle. */
+.brand span {
+  display: inline-block; margin-top: 7px;
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  letter-spacing: .10em; text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 99px; padding: 3px 9px;
+}
 
 .nav { display: flex; flex-direction: column; gap: 3px; }
 .nav button {
@@ -175,7 +208,7 @@ p  { margin: 0 0 10px; color: var(--text-2); font-size: 14px; line-height: 1.55;
   text-transform: uppercase; padding: 4px 9px; border-radius: 99px;
   background: color-mix(in srgb, var(--text-3) 16%, transparent); color: var(--text-2);
 }
-.pill.ok { background: var(--accent); color: #fff; }
+.pill.ok { background: var(--accent); color: var(--accent-ink); }
 .pill.info { background: color-mix(in srgb, var(--info) 16%, transparent); color: var(--info); }
 .pill.warn { background: color-mix(in srgb, var(--warning) 18%, transparent); color: var(--warning); }
 .pill.bad { background: color-mix(in srgb, var(--danger) 16%, transparent); color: var(--danger); }
@@ -201,7 +234,7 @@ button.btn {
   all: unset; cursor: pointer; text-align: center;
   padding: 10px 17px; border-radius: var(--radius-sm);
   font-size: 14px; font-weight: 600;
-  background: var(--accent); color: #fff;
+  background: var(--accent); color: var(--accent-ink);
 }
 button.btn:hover { filter: brightness(1.06); }
 button.btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
@@ -223,7 +256,7 @@ button.btn.link { background: transparent; color: var(--accent); padding: 4px 0;
   all: unset; cursor: pointer; padding: 6px 13px; border-radius: 99px;
   font-size: 13px; color: var(--text-2); border: 1px solid var(--stroke); background: var(--card);
 }
-.tabs button[aria-pressed="true"] { background: var(--accent); color: #fff; border-color: transparent; font-weight: 600; }
+.tabs button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: transparent; font-weight: 600; }
 
 /* ---------- Lists ---------- */
 
@@ -258,7 +291,18 @@ button.btn.link { background: transparent; color: var(--accent); padding: 4px 0;
 /* ---------- Sign in ---------- */
 
 .signin { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
-.signin .card { width: min(400px, 100%); }
+.signin .card { width: min(400px, 100%); padding: 22px; }
+
+/* The sign-in card stacks brand, blurb, form, a notice and a link row. .notice
+   only carries margin-BOTTOM, which does nothing for the two blocks that sit
+   AFTER the submit button — they ended up flush against it. */
+.signin .notice { margin: 18px 0 0; }
+/* :not() so this does not out-specify the .signin-links rule below — a bare
+   `.signin .card > p` (0,2,1) beats `.signin .signin-links` (0,2,0) and would
+   silently win the margin. */
+.signin .card > p:not(.signin-links) { margin: 0 0 16px; color: var(--text-2); line-height: 1.5; }
+.signin .signin-links { margin: 14px 0 0; font-size: 13px; line-height: 1.6; }
+.signin .signin-links .sep { color: var(--text-3); margin: 0 6px; }
 
 /* ---------- Tier table ---------- */
 

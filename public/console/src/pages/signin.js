@@ -47,10 +47,10 @@ export function renderSignIn(root, { session, onSignedIn }) {
     // a buyer's first experience of the console is a sign-in form with no way in.
     card.append(notice('info', 'No account yet?',
       'Organization accounts are set up with you directly rather than self-serve.'),
-    el('p', { class: 'muted' },
-      el('a', { href: config.salesContact, text: 'Talk to us about an organization account' }),
-      el('span', { text: ' · ' }),
-      el('a', { href: '?backend=mock', text: 'See a demo with sample data' })));
+    el('p', { class: 'signin-links' },
+      el('a', { href: config.salesContact, text: 'Talk to us' }),
+      el('span', { class: 'sep', text: '·' }),
+      el('a', { href: '?backend=mock', text: 'See a demo' })));
   }
 
   mount(root, el('div', { class: 'signin' }, card));
