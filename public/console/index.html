@@ -7,7 +7,13 @@
   <meta name="description" content="Billing and analytics for organizations publishing adventures on Nostia.">
   <meta name="color-scheme" content="light dark">
   <link rel="stylesheet" href="./styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>📍</text></svg>">
+  <!-- The real Nostia mark, shared with the marketing site rather than copied,
+       so the tab icon can never drift from it. Absolute path because the console
+       is served from /console/ on the same origin as the site root.
+       (Not src/logo2.svg — that is the stock Create React App atom, left over
+       from the template.) -->
+  <link rel="icon" type="image/png" href="/logo192.png">
+  <link rel="apple-touch-icon" href="/logo192.png">
 </head>
 <body>
   <!--
