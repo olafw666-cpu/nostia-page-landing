@@ -1,14 +1,19 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Apple,
+  ArrowRight,
+  BarChart3,
   CalendarX,
   Camera,
   Check,
   Compass,
+  Footprints,
   LifeBuoy,
   MapPin,
   Puzzle,
+  Sparkles,
   Users,
   Vault,
 } from "lucide-react";
@@ -90,24 +95,34 @@ const problems = [
 
 const features = [
   {
-    icon: Users,
-    title: "Friend & Stay Coordination",
-    text: "Add friends, coordinate stays, and plan visits in an organized, meaningful way. Mark your home as open to hosting.",
+    icon: Footprints,
+    title: "Daily Adventures",
+    text: "One measured challenge every 24 hours. Your phone's pedometer confirms it — there is no button that says you went. Easy, Medium and Advanced tiers earn points toward profile themes.",
   },
   {
     icon: Vault,
     title: "Trip Planning & Vault",
-    text: "Create shared itineraries, assign a trip leader, and pool group funds securely in the Nostia Trip Vault.",
+    text: "Shared itineraries, a trip leader, and group funds pooled securely in the Nostia Trip Vault. Split expenses and settle by card.",
+  },
+  {
+    icon: Users,
+    title: "Friends & Stays",
+    text: "Add friends, mark your home open to hosting, and coordinate visits in an organized, meaningful way.",
   },
   {
     icon: Compass,
     title: "Events & Discovery",
-    text: "Host and discover events, and find others nearby looking for travel companions or local adventures.",
+    text: "Host and discover events nearby, and find others looking for travel companions or local adventures.",
   },
   {
     icon: Camera,
-    title: "Social Experience",
-    text: "A built-in social layer — share moments in an authentic style reminiscent of early Instagram.",
+    title: "Feed & Messages",
+    text: "Share moments in an authentic style reminiscent of early Instagram, and talk to the people in them.",
+  },
+  {
+    icon: Sparkles,
+    title: "AI Trip Assistant",
+    text: "Turn a rough idea into a real itinerary, with the tedious half of the planning already done.",
   },
 ];
 
@@ -166,8 +181,8 @@ export default function Home() {
             variants={fadeUp}
             className="text-base sm:text-xl text-white/70 max-w-2xl mx-auto mb-10"
           >
-            One app for your entire social life — payments, trips, events, and
-            the people you actually want to see.
+            One app for your entire social life — adventures, trips, payments,
+            events, and the people you actually want to see.
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex justify-center">
@@ -323,6 +338,81 @@ export default function Home() {
             </motion.div>
           ))}
         </div>
+      </motion.section>
+
+      {/* ── Nostia Orgs ──
+          Deliberately its own band with its own accent colour. This is a
+          different product sold to a different buyer, and blending it into the
+          consumer sections would make both harder to read. */}
+      <motion.section
+        variants={stagger}
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewport}
+        className="mt-24 sm:mt-36"
+      >
+        <motion.div
+          variants={fadeUp}
+          className="relative overflow-hidden border border-emerald-400/25 bg-emerald-400/[0.04] rounded-3xl px-6 py-12 sm:px-12 sm:py-16"
+        >
+          <div className="pointer-events-none absolute -top-32 -right-24 h-72 w-72 rounded-full bg-emerald-400/15 blur-3xl" />
+
+          <div className="relative grid gap-10 md:grid-cols-[1.1fr_1fr] md:items-center">
+            <div>
+              <span className="inline-flex items-center gap-2 border border-emerald-400/30 bg-emerald-400/10 rounded-full px-3 py-1 text-xs text-emerald-300 mb-5">
+                For organizations
+              </span>
+
+              <h2 className="text-2xl sm:text-4xl font-bold mb-4">
+                Put your city on{" "}
+                <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+                  Nostia Orgs
+                </span>
+                .
+              </h2>
+
+              <p className="text-white/60 mb-8 max-w-lg">
+                Museums, campuses, tourism boards and downtown districts build a
+                place-anchored walking adventure, publish it into the Nostia app,
+                hand it out as a printed QR code, and see exactly where people
+                walked — and where they stopped.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                {/* Plain <a>, not <Link> — the console is a static app served from
+                    /console/ outside the React router, so it needs a real navigation. */}
+                <a
+                  href="/console/"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-emerald-400 text-black font-semibold hover:bg-emerald-300 transition"
+                >
+                  Sign in to Nostia Orgs
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+                <Link
+                  to="/organizations"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-white/20 hover:bg-white/10 hover:border-white/40 transition"
+                >
+                  What you get
+                </Link>
+              </div>
+            </div>
+
+            <ul className="space-y-4">
+              {[
+                { icon: MapPin, text: "Author a multi-stop route, anchored to real places" },
+                { icon: Check, text: "Verified arrivals — geofence dwell plus photo, not an honour system" },
+                { icon: BarChart3, text: "Per-stop analytics showing exactly where walkers dropped off" },
+              ].map(({ icon: Icon, text }) => (
+                <li key={text} className="flex gap-3 items-start">
+                  <span className="mt-0.5 w-8 h-8 shrink-0 rounded-lg bg-emerald-400/15 border border-emerald-400/25 flex items-center justify-center">
+                    <Icon className="w-4 h-4 text-emerald-300" />
+                  </span>
+                  <span className="text-white/70 text-sm sm:text-base">{text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </motion.div>
       </motion.section>
 
       {/* ── Final CTA ── */}

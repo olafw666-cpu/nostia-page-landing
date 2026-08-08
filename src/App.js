@@ -1,19 +1,41 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence, useScroll, useSpring, useMotionValueEvent } from "framer-motion";
-import { Menu, X, Mail } from "lucide-react";
+import { Menu, X, Mail, ArrowRight } from "lucide-react";
 import logo from "./nostia-transparent.png";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Newsletter from "./pages/Newsletter";
+import Organizations from "./pages/Organizations";
 import Terms from "./pages/Terms";
 import OlafWoodall from "./pages/OlafWoodall";
 
 const navLinks = [
   { to: "/home", label: "Home" },
   { to: "/about", label: "About" },
+  { to: "/organizations", label: "For Organizations" },
   { to: "/newsletter", label: "Newsletter" },
 ];
+
+/**
+ * The console is a static app served from /console/, outside this router — so
+ * every link to it must be a real <a> navigation. A <Link> would hand the path
+ * to react-router, which has no route for it and would render the 404.
+ */
+const CONSOLE_URL = "/console/";
+
+function OrgSignInButton({ onClick, className = "" }) {
+  return (
+    <a
+      href={CONSOLE_URL}
+      onClick={onClick}
+      className={`inline-flex items-center gap-1.5 text-sm bg-emerald-400 text-black font-semibold px-4 py-1.5 rounded-full hover:bg-emerald-300 transition ${className}`}
+    >
+      Org sign in
+      <ArrowRight className="w-3.5 h-3.5" />
+    </a>
+  );
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -60,8 +82,9 @@ function Header() {
           <img src={logo} alt="Nostia" className="h-9 sm:h-12 w-auto" />
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex gap-7 items-center">
+        {/* Desktop nav — lg, not md: the org sign-in button plus the extra nav
+            entry no longer fit on a tablet without crowding. */}
+        <nav className="hidden lg:flex gap-6 items-center">
           {navLinks.map(({ to, label }) => (
             <Link
               key={to}
@@ -84,11 +107,12 @@ function Header() {
           >
             Investor Deck
           </a>
+          <OrgSignInButton />
         </nav>
 
         {/* Mobile hamburger button */}
         <button
-          className="md:hidden text-white/80 p-2"
+          className="lg:hidden text-white/80 p-2"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
@@ -104,7 +128,7 @@ function Header() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="md:hidden overflow-hidden border-t border-white/10 bg-[#0e0e0f]/95 backdrop-blur-xl"
+            className="lg:hidden overflow-hidden border-t border-white/10 bg-[#0e0e0f]/95 backdrop-blur-xl"
           >
             <div className="flex flex-col gap-1 px-4 py-4">
               {navLinks.map(({ to, label }) => (
@@ -123,15 +147,18 @@ function Header() {
               <Link to="/terms" className="text-white/80 hover:text-white transition py-2" onClick={closeMenu}>
                 Terms of Service
               </Link>
-              <a
-                href="/Nostia-deck.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-white/20 px-4 py-2 rounded-full hover:bg-white/10 transition w-fit mt-2"
-                onClick={closeMenu}
-              >
-                Investor Deck
-              </a>
+              <div className="flex flex-wrap gap-2 mt-3">
+                <OrgSignInButton onClick={closeMenu} className="!py-2" />
+                <a
+                  href="/Nostia-deck.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="border border-white/20 px-4 py-2 rounded-full hover:bg-white/10 transition w-fit"
+                  onClick={closeMenu}
+                >
+                  Investor Deck
+                </a>
+              </div>
             </div>
           </motion.nav>
         )}
@@ -147,8 +174,8 @@ function Footer() {
         <div>
           <img src={logo} alt="Nostia" className="h-10 w-auto mb-4" />
           <p className="text-white/50 text-sm max-w-xs">
-            Where the trip leaves the group chat. One app for payments, trips,
-            events, and the people you actually want to see.
+            Where the trip leaves the group chat. One app for adventures, trips,
+            payments, events, and the people you actually want to see.
           </p>
           <a
             href="mailto:nostiaexecutive@nostia.io"
@@ -175,6 +202,11 @@ function Footer() {
         <div>
           <h4 className="text-sm font-semibold text-white/80 mb-4 uppercase tracking-wider">Resources</h4>
           <ul className="space-y-2 text-sm">
+            <li>
+              <a href={CONSOLE_URL} className="text-emerald-300/80 hover:text-emerald-200 transition">
+                Nostia Orgs — sign in
+              </a>
+            </li>
             <li>
               <a href="/support" className="text-white/50 hover:text-white transition">
                 Support
@@ -222,8 +254,19 @@ export default function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/newsletter" element={<Newsletter />} />
+            <Route path="/organizations" element={<Organizations />} />
+            {/* Common aliases people type or link to. Cheaper than a support email. */}
+            <Route path="/orgs" element={<Navigate to="/organizations" replace />} />
+            <Route path="/organisations" element={<Navigate to="/organizations" replace />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/olaf-woodall" element={<OlafWoodall />} />
+            {/* Without this, an unmatched path renders an empty content area —
+                the header and footer draw and nothing sits between them. The
+                public/404.html SPA hack routes real 404s back through here, so
+                this is what catches a mistyped or stale link.
+                NOTE: /console/ is a real static directory, not a route. Pages
+                serves it directly and this router never sees it. */}
+            <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
         </div>
 

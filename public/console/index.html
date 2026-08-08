@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nostia Orgs — Console</title>
+  <meta name="description" content="Billing and analytics for organizations publishing adventures on Nostia.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>📍</text></svg>">
+</head>
+<body>
+  <!--
+    Nostia Console — the desktop surface for organization OWNERS.
+
+    Scope is deliberate: billing and analytics. Authoring lives on mobile, where the author is
+    standing at the stop they are anchoring, with a camera in their hand. The two decisions that
+    happen at a desk — is this working, and what are we paying for it — happen here.
+
+    No build step and no dependencies. Native ES modules, served statically. `npx serve` or
+    `python3 -m http.server` and open the port; there is nothing to install and nothing to compile.
+  -->
+  <div id="app" role="main"></div>
+  <noscript>
+    <div class="noscript">The Nostia console needs JavaScript to load your organization's data.</div>
+  </noscript>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

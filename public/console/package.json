@@ -1,0 +1,6 @@
+{
+  "name": "nostia-orgs-console",
+  "private": true,
+  "type": "module",
+  "description": "Marks the console's .js files as ES modules. Node otherwise inherits the CRA package.json at the repo root, which is CommonJS, and reparses every file with a warning. Not a build target - these files are served verbatim by GitHub Pages from /console/, and CRA copies public/ without touching it."
+}
