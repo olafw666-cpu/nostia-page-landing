@@ -4,107 +4,128 @@ import { Link } from "react-router-dom";
 // ─────────────────────────────────────────────────────────────
 // Organization Terms — the B2B agreement for Nostia Orgs.
 //
-// ⚠️ DRAFT. This was written to cover the risks nostia-pivot/README.md and
-// BUSINESS_MODEL.md §15 identify as blocking for a paid launch — principally
-// the indemnification clause for branded content, which §15 rates HIGH and
-// calls "blocking for a paid launch". It has NOT been reviewed by counsel.
-// Do not sign a paying organization onto it until it has been.
+// Modelled directly on the live, App-Review-approved terms at
+// public/terms/index.html: same section rhythm, same plain declarative voice,
+// same data-handling emphasis (collect → use → anonymize → location → retain →
+// rights). That document cleared review for a shipping product, so its shape is
+// the safest starting point rather than a from-scratch legal register.
 //
-// Deliberately separate from the consumer /terms: the counterparty is an
-// organization, the obligations run the other way (they supply the content and
-// carry the liability for it), and mixing the two would leave both vaguer.
+// What changed for this product: the counterparty is an organization, not an end
+// user, so the obligations run the other way — they supply the content and carry
+// the liability for it. The added sections (content licence, route safety,
+// indemnification, fees) have no equivalent in the consumer document because a
+// consumer never authors a route the public walks.
+//
+// The walker-facing sections are kept deliberately close to the approved
+// wording, because they describe the same collection and the same anonymization
+// pipeline — restating that differently here would create a discrepancy between
+// two published documents describing one system.
+//
+// ⚠️ Still a DRAFT as to the added B2B clauses, particularly indemnification,
+// which BUSINESS_MODEL.md §15 rates HIGH and calls blocking for a paid launch.
+// Not reviewed by counsel. Do not sign a paying organization onto it yet.
 // ─────────────────────────────────────────────────────────────
 
 const EFFECTIVE = "August 2026";
 
 const sections = [
   {
-    title: "1. What this covers",
+    title: "Scope",
     body: [
-      "These Organization Terms govern an organization's use of Nostia Orgs: the authoring tools, the publication of organization-authored adventures into the Nostia consumer app, invite-code distribution, and the analytics console.",
-      "They are in addition to the Nostia Terms of Service, which continue to govern individual user accounts. Where the two conflict on a matter concerning the organization's own use, these Organization Terms control.",
+      "These Organization Terms govern an organization's use of Nostia Orgs: authoring adventures, publishing them into the Nostia app, distributing invite codes, and reading analytics. They are in addition to the Nostia Terms of Service, which continue to govern individual accounts. Where the two conflict on the organization's own use, these terms control.",
     ],
   },
   {
-    title: "2. Accounts and administrators",
+    title: "Data We Collect",
     body: [
-      "Organization accounts are provisioned by Nostia. Each organization designates one owner, who is responsible for the acts and omissions of every administrator and member granted access.",
-      "The organization is responsible for keeping its credentials secure and for promptly removing access from people who leave. Nostia requires a second authentication factor for console access and may require it for any administrative action.",
+      "When a person walks an adventure your organization published, Nostia collects GPS coordinates during the active session, arrival and dwell events at each stop, photos submitted for stop verification, session metrics such as length and frequency, per-stop progression milestones, and error and performance metrics.",
+      "From your organization, Nostia collects the content you author, your billing details, and administrative activity in the console.",
     ],
   },
   {
-    title: "3. Your content",
+    title: "How We Use Your Data",
     body: [
-      "The organization retains all ownership of the text, images, routes, and branding it supplies (\"Organization Content\"). Nostia claims no ownership of it.",
-      "The organization grants Nostia a non-exclusive, worldwide, royalty-free licence to host, reproduce, adapt for display, and distribute Organization Content solely for the purpose of operating the service and delivering the adventure to end users. The licence ends when the content is deleted, save for backups retained for a limited period and for records Nostia must keep by law.",
-      "The organization represents that it holds all rights necessary to grant that licence, including rights in any photograph, logo, trademark, or third-party material it uploads, and that its content does not infringe the rights of any other party.",
+      "Walker data powers the verification features your organization is paying for — confirming that someone reached a stop — and is used to generate anonymized, aggregated insights such as completion rates and per-stop drop-off. Raw data is never shared with your organization. Every figure Nostia reports to you is derived from aggregated and anonymized datasets.",
     ],
   },
   {
-    title: "4. Responsibility for routes and physical safety",
+    title: "Data Anonymization",
     body: [
-      "An adventure directs members of the public to physical places. The organization is solely responsible for the routes it authors: that each stop is on publicly accessible land or land the organization is entitled to direct people onto, that the route is reasonably safe to walk, and that it complies with local law and any permit or licensing requirement.",
-      "Nostia does not inspect, survey, or approve routes, and does not verify that a stop is safe or lawful to visit. Publication by Nostia is not an endorsement or a safety assessment.",
+      "GPS data is rounded or bucketed by region. User identifiers are removed prior to analysis. Metrics are aggregated over time windows, and aggregates covering too few participants are withheld entirely so that they cannot identify a person. No personally identifiable information is included in anything Nostia shows an organization.",
+      "Your organization must not attempt to re-identify any individual from analytics, or combine analytics with other data for that purpose.",
     ],
   },
   {
-    title: "5. Indemnification",
+    title: "Location Access",
     body: [
-      "The organization will defend, indemnify, and hold harmless Nostia LLC, its officers, employees, and agents from and against any third-party claim, demand, suit, proceeding, loss, liability, damage, fine, or expense (including reasonable legal fees) arising out of or relating to: (a) Organization Content, including any claim of infringement, defamation, or misuse of a third party's name, likeness, or trademark; (b) any route the organization authored, including any claim of personal injury, death, property damage, or trespass suffered by a person following that route; (c) the organization's breach of these terms or of any law; and (d) any representation the organization makes about a sponsorship, partnership, or endorsement.",
-      "Nostia will notify the organization of any such claim, allow the organization to control the defence with counsel reasonably acceptable to Nostia, and cooperate at the organization's expense. The organization may not settle a claim in a way that imposes any obligation or admission on Nostia without Nostia's prior written consent.",
+      "Location sharing is a mandatory requirement for a person to walk an adventure, because arrival at a stop is what the verification measures. A walker who declines or revokes location access cannot complete an adventure.",
+      "Your organization never receives a walker's location. It receives only whether a stop was reached, in aggregate.",
     ],
   },
   {
-    title: "6. Acceptable use",
+    title: "Data Retention",
     body: [
-      "Organization Content must not be unlawful, discriminatory, harassing, deceptive, or sexually explicit, must not target children as an audience without the organization's own compliant consent mechanism, and must not direct people to trespass or to place themselves in foreseeable danger.",
-      "Nostia may remove or unpublish content, or suspend an organization's account, where it reasonably believes these terms have been breached or where a route presents a risk to public safety. Where practical Nostia will give notice first; where a safety risk is immediate it may act first and give notice after.",
+      "Raw location data and submitted photos are retained for a limited period as specified in our retention policy, then purged, while anonymized aggregates are preserved.",
+      "Reference photographs your organization uploads are treated differently: they are your content, not a walker's, and are retained until you delete them.",
     ],
   },
   {
-    title: "7. Data and analytics",
+    title: "Your Content",
     body: [
-      "Nostia provides the organization with anonymized, aggregated analytics about how its adventures were walked. Nostia does not disclose to an organization who walked an adventure, and aggregates covering too few participants are withheld precisely so that they cannot identify a person.",
-      "The organization must not attempt to re-identify any individual from analytics, or combine analytics with other data for that purpose.",
-      "End users remain Nostia's users. The organization obtains no right to contact them and no licence to their personal data by virtue of publishing an adventure.",
+      "Your organization retains all ownership of the text, images, routes, and branding it supplies. Nostia claims no ownership of it.",
+      "You grant Nostia a non-exclusive, worldwide, royalty-free licence to host, reproduce, adapt for display, and distribute that content solely to operate the service and deliver the adventure to walkers. The licence ends when the content is deleted, save for backups retained for a limited period and records Nostia must keep by law.",
+      "You represent that you hold all rights necessary to grant that licence, including rights in any photograph, logo, trademark, or third-party material you upload.",
     ],
   },
   {
-    title: "8. Fees, term, and cancellation",
+    title: "Routes and Physical Safety",
     body: [
-      "Subscription fees, billing interval, and any included limits are those presented at the time of purchase. Fees are billed in advance and are non-refundable except where required by law.",
-      "A subscription renews automatically for successive terms unless cancelled before the end of the current term. Cancellation takes effect at the end of the paid term; access and published adventures continue until then.",
-      "Nostia may change fees for a renewal term with at least thirty days' notice before that term begins.",
+      "An adventure directs members of the public to physical places. Your organization is solely responsible for the routes it authors: that each stop is on publicly accessible land or land you are entitled to direct people onto, that the route is reasonably safe to walk, and that it complies with local law and any permit requirement.",
+      "Nostia does not inspect, survey, or approve routes. Publication is not an endorsement or a safety assessment.",
     ],
   },
   {
-    title: "9. Service availability",
+    title: "Indemnification",
     body: [
-      "Nostia provides the service on an \"as is\" and \"as available\" basis and does not warrant that it will be uninterrupted or error-free. Nostia disclaims all implied warranties to the fullest extent the law permits, including merchantability, fitness for a particular purpose, and non-infringement.",
+      "Your organization will defend, indemnify, and hold harmless Nostia LLC, its officers, employees, and agents from and against any third-party claim, demand, suit, proceeding, loss, liability, damage, fine, or expense (including reasonable legal fees) arising out of or relating to: (a) your content, including any claim of infringement, defamation, or misuse of a third party's name, likeness, or trademark; (b) any route you authored, including any claim of personal injury, death, property damage, or trespass suffered by a person following it; (c) your breach of these terms or of any law; and (d) any representation you make about a sponsorship, partnership, or endorsement.",
+      "Nostia will notify you of any such claim, allow you to control the defence with counsel reasonably acceptable to Nostia, and cooperate at your expense. You may not settle a claim in a way that imposes any obligation or admission on Nostia without Nostia's prior written consent.",
     ],
   },
   {
-    title: "10. Limitation of liability",
+    title: "Acceptable Use",
     body: [
-      "To the fullest extent permitted by law, neither party is liable for indirect, incidental, special, consequential, or punitive damages, or for lost profits, revenue, or data.",
-      "Nostia's total aggregate liability arising out of or relating to these terms is limited to the fees the organization paid Nostia in the twelve months preceding the event giving rise to the claim.",
-      "Nothing in this section limits the organization's obligations under section 5 (Indemnification), or either party's liability for death or personal injury caused by its negligence, for fraud, or for any other liability that cannot lawfully be limited.",
+      "Content must not be unlawful, discriminatory, harassing, deceptive, or sexually explicit, must not target children as an audience without your own compliant consent mechanism, and must not direct people to trespass or into foreseeable danger.",
+      "Nostia may unpublish content or suspend an account where it reasonably believes these terms have been breached or a route presents a risk to public safety. Where practical Nostia gives notice first; where the risk is immediate it may act first and give notice after.",
     ],
   },
   {
-    title: "11. Termination",
+    title: "Fees and Cancellation",
     body: [
-      "Either party may terminate for material breach that remains uncured thirty days after written notice. Nostia may suspend immediately where section 6 permits.",
-      "On termination the organization's adventures are unpublished and console access ends. Sections 3 (as to the surviving licence), 5, 7, 9, 10, and 12 survive termination.",
+      "Subscription fees, billing interval, and included limits are those presented at the time of purchase. Fees are billed in advance and are non-refundable except where required by law.",
+      "A subscription renews automatically unless cancelled before the end of the current term. Cancellation takes effect at the end of the paid term. Nostia may change fees for a renewal term with at least thirty days' notice before that term begins.",
     ],
   },
   {
-    title: "12. General",
+    title: "Your Rights",
     body: [
-      "These terms are governed by the laws of the State of New Hampshire, without regard to its conflict-of-laws rules, and the state and federal courts located in New Hampshire have exclusive jurisdiction.",
-      "Nostia may update these terms; material changes take effect for an organization at the start of its next renewal term, or thirty days after notice, whichever is later.",
-      "Neither party may assign these terms without the other's consent, except to a successor in a merger or sale of substantially all assets.",
-      "Questions about these terms: sales@nostia.io.",
+      "Your organization may request export of its content and account data, request deletion, and terminate at any time subject to the cancellation terms above.",
+      "Walkers hold their own rights over their own data — export, deletion, withdrawal of consent, and opting out of collection — supported under GDPR and CCPA. Those rights are exercised with Nostia, not with your organization, and Nostia will honour them without your involvement. End users remain Nostia's users; publishing an adventure grants your organization no right to contact them and no licence to their personal data.",
+    ],
+  },
+  {
+    title: "Service Availability and Liability",
+    body: [
+      "The service is provided on an “as is” and “as available” basis. Nostia does not warrant that it will be uninterrupted or error-free and disclaims all implied warranties to the fullest extent the law permits.",
+      "Neither party is liable for indirect, incidental, special, consequential, or punitive damages, or for lost profits, revenue, or data. Nostia's total aggregate liability arising out of these terms is limited to the fees paid to Nostia in the twelve months preceding the claim.",
+      "Nothing here limits your obligations under Indemnification, or either party's liability for death or personal injury caused by its negligence, for fraud, or for any other liability that cannot lawfully be limited.",
+    ],
+  },
+  {
+    title: "Termination and General",
+    body: [
+      "Either party may terminate for material breach uncured thirty days after written notice. On termination your adventures are unpublished and console access ends. The sections on content licence, indemnification, data, liability, and this section survive.",
+      "These terms are governed by the laws of the State of New Hampshire, and the state and federal courts located there have exclusive jurisdiction. Nostia may update these terms; material changes take effect at the start of your next renewal term, or thirty days after notice, whichever is later.",
+      "Questions: sales@nostia.io.",
     ],
   },
 ];
