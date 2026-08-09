@@ -8,6 +8,7 @@ import About from "./pages/About";
 import Newsletter from "./pages/Newsletter";
 import Organizations from "./pages/Organizations";
 import Terms from "./pages/Terms";
+import OrgTerms from "./pages/OrgTerms";
 import OlafWoodall from "./pages/OlafWoodall";
 
 const navLinks = [
@@ -218,6 +219,11 @@ function Footer() {
               </Link>
             </li>
             <li>
+              <Link to="/organization-terms" className="text-white/50 hover:text-white transition">
+                Organization Terms
+              </Link>
+            </li>
+            <li>
               <a
                 href="/Nostia-deck.pdf"
                 target="_blank"
@@ -255,6 +261,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/newsletter" element={<Newsletter />} />
             <Route path="/organizations" element={<Organizations />} />
+            <Route path="/organization-terms" element={<OrgTerms />} />
             {/* Common aliases people type or link to. Cheaper than a support email. */}
             <Route path="/orgs" element={<Navigate to="/organizations" replace />} />
             <Route path="/organisations" element={<Navigate to="/organizations" replace />} />
