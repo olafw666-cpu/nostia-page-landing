@@ -18,6 +18,19 @@ import { MockBackend } from './mock.js';
  * startCheckout(orgId, tier)                       → { url }
  * billingPortal(orgId)                             → { url }
  * listInviteCodes(orgId)                           → [inviteCode]
+ *
+ * loadAdventure(orgId, advId)                      → { adventure, steps, preflightFailures }
+ * createAdventure(orgId, fields)                   → adventure
+ * updateAdventure(orgId, advId, fields)            → adventure
+ * addStep(orgId, advId, fields)                    → step
+ * updateStep(orgId, advId, stepId, fields)         → step
+ * deleteStep(orgId, advId, stepId)                 → true
+ * uploadStepReference(orgId, advId, stepId, file)  → { ok, has_reference }
+ * approveStep(orgId, advId, stepId)                → { ok }
+ * preflight(orgId, advId)                          → { ok, failures }
+ * publishAdventure(orgId, advId)                   → adventure
+ * archiveAdventure(orgId, advId)                   → adventure
+ * reviseAdventure(orgId, advId)                    → adventure
  * ```
  *
  * Two implementations satisfy it: `RestBackend` (HTTP, speaking docs/BACKEND_CONTRACT.md) and

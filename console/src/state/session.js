@@ -5,11 +5,19 @@ const STORAGE_KEY = 'nostia.console.session';
 /**
  * Identity, the backend handle, and which organization is selected.
  *
- * The console is an **owner** surface. Billing routes are owner-only server-side, so an admin would
- * land on a dashboard whose primary action 403s; filtering here turns that into an explanation.
- * The server remains the authority — this is a UX gate, not a security one, and the console would
- * still be refused if it asked.
+ * WHO GETS IN. This used to be an owner-only surface, which was right when the console did billing
+ * and analytics and nothing else. Authoring changed that: creating adventures, editing stops and
+ * approving them are all `requireOrgAdmin` server-side, so shutting admins out of the console now
+ * denies them work the server would happily accept.
+ *
+ * So the gate is: **owner or admin may enter; only an owner sees the owner-only actions.** That
+ * matches the server exactly — publish, archive, checkout and the billing portal are
+ * `requireOrgOwner`, everything else is `requireOrgAdmin`. Anything narrower hides real work;
+ * anything wider renders buttons that 403.
+ *
+ * The server remains the authority. This is a UX gate, not a security one.
  */
+const MANAGING_ROLES = ['owner', 'admin'];
 export class Session {
   constructor(backend) {
     this.backend = backend;
@@ -34,7 +42,12 @@ export class Session {
 
   get isSignedIn() { return Boolean(this.user); }
 
-  /** Organizations this user owns — the ones the console can actually operate on. */
+  /** Organizations this user can operate on at all — owner or admin. */
+  get manageableMemberships() {
+    return this.memberships.filter((m) => MANAGING_ROLES.includes(m.role));
+  }
+
+  /** Organizations this user owns. Owner-only actions check this, not membership. */
   get ownedMemberships() {
     return this.memberships.filter((m) => m.role === config.requiredRole);
   }
@@ -45,7 +58,20 @@ export class Session {
   }
 
   get organization() {
-    return this.ownedMemberships.find((m) => String(m.org_id) === String(this.orgId)) ?? null;
+    return this.manageableMemberships.find((m) => String(m.org_id) === String(this.orgId)) ?? null;
+  }
+
+  /**
+   * Role in the CURRENTLY SELECTED organization — the only role any screen should branch on. A
+   * user can own one organization and merely administer another, so a global "is owner" would
+   * enable a publish button in the wrong tab.
+   */
+  get role() {
+    return this.organization?.role ?? null;
+  }
+
+  get isOwner() {
+    return this.role === 'owner';
   }
 
   async restore() {
@@ -101,10 +127,10 @@ export class Session {
     this.memberships = memberships ?? [];
     this.backend.setCredentials(credentials);
     // Re-resolve the selected org against the fresh list: a role can be revoked, and silently
-    // keeping a stale selection would leave someone in a dashboard they no longer own.
-    const owned = this.ownedMemberships;
-    if (!owned.some((m) => String(m.org_id) === String(this.orgId))) {
-      this.orgId = owned[0]?.org_id ?? null;
+    // keeping a stale selection would leave someone in a dashboard they no longer belong to.
+    const manageable = this.manageableMemberships;
+    if (!manageable.some((m) => String(m.org_id) === String(this.orgId))) {
+      this.orgId = manageable[0]?.org_id ?? null;
     }
     this.#emit();
   }

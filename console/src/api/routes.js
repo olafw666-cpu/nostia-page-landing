@@ -15,6 +15,18 @@ export const routes = {
   adventureAnalytics: '/orgs/{org}/adventures/{adventure}/analytics',
   adventureAnalyticsCSV: '/orgs/{org}/adventures/{adventure}/analytics.csv',
 
+  // Authoring. Copied verbatim from apps/ios/Nostia/Core/Backend/BackendRoutes.swift
+  // so the two clients cannot drift apart on a path.
+  adventure: '/orgs/{org}/adventures/{adventure}',
+  steps: '/orgs/{org}/adventures/{adventure}/steps',
+  step: '/orgs/{org}/adventures/{adventure}/steps/{step}',
+  stepReference: '/orgs/{org}/adventures/{adventure}/steps/{step}/reference',
+  stepApprove: '/orgs/{org}/adventures/{adventure}/steps/{step}/approve',
+  preflight: '/orgs/{org}/adventures/{adventure}/preflight',
+  publish: '/orgs/{org}/adventures/{adventure}/publish',
+  archive: '/orgs/{org}/adventures/{adventure}/archive',
+  revise: '/orgs/{org}/adventures/{adventure}/revise',
+
   billing: '/orgs/{org}/billing',
   billingCheckout: '/orgs/{org}/billing/checkout',
   billingPortal: '/orgs/{org}/billing/portal',

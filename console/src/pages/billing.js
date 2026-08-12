@@ -31,6 +31,17 @@ export async function renderBilling(root, { session, navigate }) {
   page.append(el('h1', { text: 'Plan and billing' }));
   page.append(el('p', { class: 'lede', text: session.organization?.name ?? '' }));
 
+  // `can_publish` is the entitlement gate's own answer, and it is not always
+  // inferable from `status`: an expired trial still reads "trialing", because
+  // nothing in Stripe ever moved it. Trusting the label would show an enabled
+  // Publish button that 402s.
+  if (billing.can_publish === false && billing.status !== 'past_due') {
+    page.append(notice('warn',
+      billing.blocked_reason === 'trial_expired' ? 'Your trial has ended' : 'Publishing is paused',
+      'Everything already published stays live — a printed QR code in the physical world has to keep working. What has stopped is publishing anything new and using the assistant.',
+      { label: 'Talk to us about a plan', onClick: () => window.open(config.salesContact, '_blank', 'noopener') }));
+  }
+
   if (billing.status === 'past_due') {
     page.append(notice('warn', 'Last payment failed',
       'Nothing has gone offline. Everything already published stays live — a printed QR code in the physical world has to keep working — but new publishes and assistant drafts are paused until the payment succeeds.',
@@ -43,6 +54,14 @@ export async function renderBilling(root, { session, navigate }) {
     page.append(notice('info', 'Self-serve billing isn’t switched on yet',
       'Plans are still being set up. Get in touch and we’ll put your organization on the right one.',
       { label: 'Contact us', onClick: () => window.open(config.salesContact, '_blank', 'noopener') }));
+  }
+
+  // Admins can read the plan — knowing which tier they are authoring against is exactly what
+  // explains a 402 — but checkout and the billing portal are requireOrgOwner server-side, so the
+  // buttons that would 403 are not rendered for them.
+  if (!session.isOwner) {
+    page.append(notice('info', 'You can see the plan, but not change it',
+      'Changing the plan or opening the payment portal is done by the organization owner.'));
   }
 
   page.append(currentPlanCard(billing, session, page));
@@ -78,7 +97,7 @@ function currentPlanCard(billing, session, page) {
   card.append(detailRow('Assistant drafts', e.assist_calls_per_day == null ? '—' : `${e.assist_calls_per_day} a day`));
   if (billing.seats != null) card.append(detailRow('Seats', String(billing.seats)));
 
-  if (billing.configured) {
+  if (billing.configured && session.isOwner) {
     card.append(el('div', { style: { marginTop: '16px' } },
       el('button', {
         class: 'btn ghost',
@@ -98,7 +117,7 @@ function tierCard(tier, billing, session, page) {
   card.append(el('p', { class: 'small muted', text: tier.blurb }));
   card.append(el('ul', {}, ...tier.features.map((feature) => el('li', { text: feature }))));
 
-  if (!isCurrent) {
+  if (!isCurrent && session.isOwner) {
     const status = el('div', { style: { marginTop: '12px' } });
     const button = el('button', {
       class: 'btn link',

@@ -47,6 +47,42 @@ export class MockBackend {
       3: ['West Pool', 'The Ledge', 'Cormorant Rock'],
     };
 
+    // Authoring works on whole stops, analytics only needs the titles above, so
+    // the editable records are derived from the same source rather than being a
+    // second list that can disagree with it.
+    //
+    // Stop 4 of the published walk is deliberately missing its coordinate and
+    // its approval: the draft in org 1 must fail preflight for a real reason, or
+    // the editor's "why can't I publish this" path is never seen in the demo.
+    this.steps = {};
+    for (const [adventureId, titles] of Object.entries(this.stops)) {
+      this.steps[adventureId] = titles.map((title, index) => ({
+        id: 1000 + Number(adventureId) * 100 + index,
+        order: index + 1,
+        title,
+        text: `Find ${title} and look for the marker.`,
+        verify_criterion: `a clear photo of ${title}`,
+        verification_mode: 'geo_and_photo',
+        lat: 42.9814 + index * 0.001,
+        lng: -70.9478 + index * 0.001,
+        geofence_radius_m: 100,
+        dwell_seconds: 90,
+        has_reference: true,
+        approved_at: '2026-07-01T12:00:00Z',
+      }));
+    }
+    this.steps[2] = [
+      { id: 1201, order: 1, title: 'Bandstand', text: 'Meet at the bandstand.',
+        verify_criterion: 'the bandstand roof', verification_mode: 'geo_and_photo',
+        lat: 42.9810, lng: -70.9470, geofence_radius_m: 100, dwell_seconds: 90,
+        has_reference: true, approved_at: '2026-08-01T09:00:00Z' },
+      { id: 1202, order: 2, title: 'String Bridge', text: 'Walk out to the bridge.',
+        verify_criterion: 'the ironwork', verification_mode: 'geo_and_photo',
+        lat: null, lng: null, geofence_radius_m: 100, dwell_seconds: 90,
+        has_reference: false, approved_at: null },
+    ];
+    this.nextId = 5000;
+
     this.billing = {
       1: {
         tier: 'standard', label: 'Standard', status: 'active',
@@ -60,10 +96,15 @@ export class MockBackend {
         // not configured. The console therefore renders the path that actually ships.
         purchasable: false,
         configured: false,
+        can_publish: true,
+        blocked_reason: null,
       },
+      // An EXPIRED trial. Note it still reads `trialing` — nothing in Stripe ever moved it, because
+      // Stripe was never involved — so `can_publish` is the only honest signal here, and this
+      // fixture exists to stop a screen that reads `status` alone from looking correct.
       2: {
         tier: 'trial', label: 'Trial', status: 'trialing',
-        current_period_end: '2026-08-28T00:00:00Z', seats: null,
+        current_period_end: '2026-07-28T00:00:00Z', seats: null,
         entitlements: {
           adventures: 1, stops: 5, analytics: true, custom_branding: false,
           invite_codes: false, csv_export: false, multi_admin: false, assist_calls_per_day: 3,
@@ -71,6 +112,8 @@ export class MockBackend {
         usage: { published_adventures: 1 },
         purchasable: false,
         configured: false,
+        can_publish: false,
+        blocked_reason: 'trial_expired',
       },
       3: {
         tier: 'trial', label: 'Trial', status: 'past_due',
@@ -82,6 +125,8 @@ export class MockBackend {
         usage: { published_adventures: 1 },
         purchasable: false,
         configured: false,
+        can_publish: false,
+        blocked_reason: 'past_due',
       },
     };
 
@@ -146,7 +191,7 @@ export class MockBackend {
     if (!adventure) throw new ApiError('not-found', 'That adventure is not in this organization.');
 
     const numbers = this.#numbers(adventure.id);
-    const titles = this.stops[adventure.id] ?? [];
+    const titles = (this.steps[adventure.id] ?? []).map((s) => s.title);
 
     let previousReached = null;
     const perStop = titles.map((title, index) => {
@@ -223,6 +268,158 @@ export class MockBackend {
     };
   }
 
+  // ---- Authoring ---------------------------------------------------------
+  // A second full implementation, not a stub: the point of the seam is that no
+  // page can tell which backend it is running on. It also reproduces the rules
+  // that actually bite while authoring — a published adventure is immutable, any
+  // edit clears approval, and preflight refuses to publish an incomplete stop.
+
+  async loadAdventure(orgId, adventureId) {
+    await pause(250);
+    const adventure = (this.adventures[orgId] ?? []).find((a) => String(a.id) === String(adventureId));
+    if (!adventure) throw new ApiError('not-found', 'Adventure not found.');
+    const steps = this.#stepsFor(adventure.id);
+    return { adventure, steps, preflightFailures: this.#preflightFailures(orgId, adventure, steps) };
+  }
+
+  async createAdventure(orgId, fields) {
+    await pause(300);
+    const status = this.billing[orgId];
+    const published = (this.adventures[orgId] ?? []).filter((a) => a.status === 'published').length;
+    const allowed = status?.entitlements.adventures;
+    if (allowed !== null && allowed !== undefined && published >= allowed) {
+      throw new ApiError('entitlement', `Your plan includes ${allowed} published adventure(s).`,
+                         { tier: status?.tier });
+    }
+    const adventure = {
+      id: this.#nextId(), title: fields.title || 'Untitled adventure', status: 'draft', version: 1,
+      description: fields.description ?? '', difficulty: fields.difficulty ?? 'easy',
+      estimated_minutes: fields.estimated_minutes ?? 60,
+      updated_at: new Date().toISOString(),
+    };
+    (this.adventures[orgId] ||= []).push(adventure);
+    this.steps[adventure.id] = [];
+    return adventure;
+  }
+
+  async updateAdventure(orgId, adventureId, fields) {
+    await pause(200);
+    const adventure = (this.adventures[orgId] ?? []).find((a) => String(a.id) === String(adventureId));
+    if (!adventure) throw new ApiError('not-found', 'Adventure not found.');
+    if (adventure.status === 'published') {
+      throw new ApiError('conflict', 'Published adventures are immutable; create a revision.');
+    }
+    Object.assign(adventure, fields, { updated_at: new Date().toISOString() });
+    return adventure;
+  }
+
+  async addStep(orgId, adventureId, fields) {
+    await pause(250);
+    const { adventure } = await this.loadAdventure(orgId, adventureId);
+    if (adventure.status === 'published') {
+      throw new ApiError('conflict', 'Published adventures are immutable; create a revision.');
+    }
+    const status = this.billing[orgId];
+    const steps = this.#stepsFor(adventure.id);
+    const allowed = status?.entitlements.stops;
+    if (allowed !== null && allowed !== undefined && steps.length >= allowed) {
+      throw new ApiError('entitlement', `Your plan allows ${allowed} stops per adventure.`,
+                         { tier: status?.tier });
+    }
+    const step = {
+      id: this.#nextId(), order: steps.length + 1,
+      title: fields.title ?? '', text: fields.text ?? '',
+      verify_criterion: fields.verify_criterion ?? '',
+      verification_mode: fields.verification_mode ?? 'geo_and_photo',
+      lat: fields.lat ?? null, lng: fields.lng ?? null,
+      geofence_radius_m: fields.geofence_radius_m ?? 100,
+      dwell_seconds: fields.dwell_seconds ?? 90,
+      has_reference: false, approved_at: null,
+    };
+    steps.push(step);
+    return step;
+  }
+
+  async updateStep(orgId, adventureId, stepId, fields) {
+    await pause(200);
+    const step = this.#stepsFor(adventureId).find((s) => String(s.id) === String(stepId));
+    if (!step) throw new ApiError('not-found', 'Stop not found.');
+    // §12: EVERY edit clears approval, including one that changes nothing. A
+    // conditional here would be exactly the "edit and preserve approval" path
+    // the rule forbids.
+    Object.assign(step, fields, { approved_at: null });
+    return step;
+  }
+
+  async deleteStep(orgId, adventureId, stepId) {
+    await pause(200);
+    const steps = this.#stepsFor(adventureId);
+    const index = steps.findIndex((s) => String(s.id) === String(stepId));
+    if (index === -1) throw new ApiError('not-found', 'Stop not found.');
+    steps.splice(index, 1);
+    steps.forEach((s, i) => { s.order = i + 1; });
+    return true;
+  }
+
+  async uploadStepReference(orgId, adventureId, stepId) {
+    await pause(500);
+    const step = this.#stepsFor(adventureId).find((s) => String(s.id) === String(stepId));
+    if (!step) throw new ApiError('not-found', 'Stop not found.');
+    // Note what is NOT returned: no URL, no storage key. A reference image is
+    // never served back to a client.
+    step.has_reference = true;
+    step.approved_at = null;
+    return { ok: true, step_id: step.id, has_reference: true };
+  }
+
+  async approveStep(orgId, adventureId, stepId) {
+    await pause(200);
+    const step = this.#stepsFor(adventureId).find((s) => String(s.id) === String(stepId));
+    if (!step) throw new ApiError('not-found', 'Stop not found.');
+    step.approved_at = new Date().toISOString();
+    return { ok: true, step };
+  }
+
+  async preflight(orgId, adventureId) {
+    await pause(250);
+    const { adventure, steps } = await this.loadAdventure(orgId, adventureId);
+    const failures = this.#preflightFailures(orgId, adventure, steps);
+    return { ok: failures.length === 0, failures };
+  }
+
+  async publishAdventure(orgId, adventureId) {
+    await pause(400);
+    const { adventure, steps } = await this.loadAdventure(orgId, adventureId);
+    const failures = this.#preflightFailures(orgId, adventure, steps);
+    if (failures.length) {
+      throw new ApiError('conflict', 'This adventure is not ready to publish yet.', { failures });
+    }
+    adventure.status = 'published';
+    adventure.updated_at = new Date().toISOString();
+    return adventure;
+  }
+
+  async archiveAdventure(orgId, adventureId) {
+    await pause(300);
+    const { adventure } = await this.loadAdventure(orgId, adventureId);
+    adventure.status = 'archived';
+    return adventure;
+  }
+
+  async reviseAdventure(orgId, adventureId) {
+    await pause(350);
+    const { adventure, steps } = await this.loadAdventure(orgId, adventureId);
+    const revision = {
+      ...adventure, id: this.#nextId(), status: 'draft', version: adventure.version + 1,
+      updated_at: new Date().toISOString(),
+    };
+    (this.adventures[orgId] ||= []).push(revision);
+    // Copied stops arrive UNAPPROVED: a new version has not been signed off by a
+    // human yet, which is the entire point of the approval record.
+    this.steps[revision.id] = steps.map((s) => ({ ...s, id: this.#nextId(), approved_at: null }));
+    return revision;
+  }
+
   async billingStatus(orgId) {
     await pause(250);
     const status = this.billing[orgId];
@@ -246,6 +443,47 @@ export class MockBackend {
   async listInviteCodes(orgId) {
     await pause(250);
     return this.invites[orgId] ?? [];
+  }
+
+  #stepsFor(adventureId) {
+    return (this.steps[adventureId] ||= []);
+  }
+
+  #nextId() {
+    this.nextId += 1;
+    return this.nextId;
+  }
+
+  /**
+   * The same preflight the server runs, in the same vocabulary: `{ code, detail }`.
+   *
+   * Kept honest on purpose — a mock that always says "ready to publish" would
+   * hide the one screen the customer meets most often, which is the one
+   * explaining why they cannot publish yet.
+   */
+  #preflightFailures(orgId, adventure, steps) {
+    const failures = [];
+    if (adventure.status !== 'draft') {
+      failures.push({ code: 'not_draft', detail: `status is ${adventure.status}` });
+    }
+    if (!steps.length) failures.push({ code: 'no_steps', detail: 'an adventure needs at least one stop' });
+
+    for (const step of steps) {
+      const where = `stop ${step.order}`;
+      if (!step.approved_at) failures.push({ code: 'unapproved_step', detail: `${where} is not approved` });
+      if (step.verification_mode !== 'geo' && !step.has_reference) {
+        failures.push({ code: 'missing_reference', detail: `${where} has no reference photo` });
+      }
+      if (step.verification_mode !== 'photo' && (step.lat === null || step.lng === null)) {
+        failures.push({ code: 'missing_coordinate', detail: `${where} has no location` });
+      }
+    }
+
+    const limits = this.billing[orgId]?.entitlements;
+    if (limits?.stops != null && steps.length > limits.stops) {
+      failures.push({ code: 'tier_limit', detail: `stops ${steps.length} > ${limits.stops}` });
+    }
+    return failures;
   }
 
   #numbers(adventureId) {

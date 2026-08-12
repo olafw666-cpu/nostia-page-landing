@@ -5,6 +5,7 @@ import { el, mount } from './ui/dom.js';
 import { spinner, notice } from './ui/components.js';
 import { renderSignIn } from './pages/signin.js';
 import { renderOverview } from './pages/overview.js';
+import { renderAuthoring } from './pages/authoring.js';
 import { renderAnalytics } from './pages/analytics.js';
 import { renderBilling } from './pages/billing.js';
 import { renderDistribution } from './pages/distribution.js';
@@ -14,6 +15,7 @@ const session = new Session(makeBackend());
 
 const PAGES = {
   overview: { label: 'Overview', icon: '◫', render: renderOverview },
+  authoring: { label: 'Adventures', icon: '✎', render: renderAuthoring },
   analytics: { label: 'Analytics', icon: '◧', render: renderAnalytics },
   distribution: { label: 'Distribution', icon: '◎', render: renderDistribution },
   billing: { label: 'Plan and billing', icon: '◈', render: renderBilling },
@@ -43,18 +45,18 @@ async function render() {
     return;
   }
 
-  // The console is an owner surface. An admin's session is valid — they simply have nothing to do
-  // here, and every billing route would refuse them server-side. Saying which organizations they're
-  // in and what role they hold is more useful than an empty dashboard.
-  if (!session.ownedMemberships.length) {
+  // Owner OR admin: authoring is admin-level server-side, so locking admins out would deny them
+  // work the server accepts. Owner-only ACTIONS (publish, archive, checkout, the billing portal)
+  // are gated individually inside the pages, where the selected organization's role is known.
+  //
+  // Someone with no managing role at all is a walker who signed in to the wrong place — there is
+  // genuinely nothing here for them, and saying so beats an empty dashboard.
+  if (!session.manageableMemberships.length) {
     mount(root, el('div', { class: 'signin' }, el('div', { class: 'card' },
       el('h1', { text: 'Nothing to manage here' }),
-      el('p', { text: 'The console is for organization owners — it is where billing and analytics live. You are signed in, but you do not own an organization.' }),
-      session.nonOwnerMemberships.length
-        ? notice('info', 'You are an admin, not an owner',
-            `${session.nonOwnerMemberships.map((m) => m.name).join(', ')} — ask the owner to open the console, or use the Nostia mobile app, where admins can author and publish.`)
-        : notice('info', 'No organizations yet',
-            'Ask an existing owner to add you, or create an organization in the Nostia mobile app.'),
+      el('p', { text: 'The console is where organizations build adventures and manage their plan. You are signed in, but you do not own or administer one.' }),
+      notice('info', 'No organizations yet',
+        'Ask an existing owner to add you as an admin. If you are here to walk an adventure, use the Nostia app on your phone instead.'),
       el('button', { class: 'btn ghost', text: 'Sign out', onClick: async () => { await session.signOut(); render(); } }))));
     return;
   }
@@ -82,7 +84,7 @@ function sidebar(route) {
     }));
   }
 
-  const owned = session.ownedMemberships;
+  const owned = session.manageableMemberships;
   const select = el('select', { 'aria-label': 'Organization', onChange: (event) => {
     session.selectOrganization(event.target.value);
     navigate('overview');
