@@ -168,26 +168,41 @@ const limitText = (value) => (value == null ? 'Unlimited' : String(value));
  * Feature rows only. **No prices** — they live in Stripe, are resolved at runtime, and are not
  * knowable to this console.
  */
+// BUSINESS_MODEL_V2.md §V2-5. Ids must match the keys in config/entitlements.json
+// exactly — they are the value sent to billing/checkout, and a mismatch is a 400
+// the customer cannot do anything about.
 const TIERS = [
   {
-    id: 'trial',
-    label: 'Trial',
-    blurb: 'Take one adventure all the way through.',
-    features: ['1 published adventure', '5 stops', 'Analytics', '3 assistant drafts a day'],
+    id: 'pilot',
+    label: 'Pilot',
+    blurb: 'Free. Take one route all the way through.',
+    features: ['1 published adventure', '5 stops', 'Analytics',
+               'Invite codes and printable QR', '3 assistant drafts a day'],
   },
   {
-    id: 'standard',
-    label: 'Standard',
-    blurb: 'For a single programme or campaign.',
-    features: ['5 published adventures', '15 stops', 'Analytics', 'Custom branding',
+    id: 'orientation',
+    label: 'Orientation',
+    blurb: 'One programme office, one incoming class.',
+    features: ['3 published adventures', '12 stops', 'Analytics', 'Custom branding',
                'Invite codes and printable QR', '20 assistant drafts a day'],
   },
   {
-    id: 'institutional',
-    label: 'Institutional',
-    blurb: 'For a whole organization.',
+    id: 'campus',
+    label: 'Campus',
+    blurb: 'Every department, all year.',
     features: ['Unlimited adventures', 'Unlimited stops', 'Analytics', 'Custom branding',
-               'Invite codes and printable QR', 'CSV export', 'Multiple admins',
-               '100 assistant drafts a day'],
+               'Invite codes and printable QR', 'CSV export', 'Multiple administrators',
+               '60 assistant drafts a day'],
+  },
+  {
+    id: 'system',
+    label: 'System',
+    blurb: 'Multi-campus or a system office.',
+    // SSO is declared by the tier and not built (§V2-13 — not before a
+    // System-tier buyer is named). Said plainly rather than dropped: the tier is
+    // differentiated by it, and implying a working SSO is a promise the server
+    // cannot keep.
+    features: ['Everything in Campus', '200 assistant drafts a day',
+               'SSO and roster sync — on request, not yet available'],
   },
 ];

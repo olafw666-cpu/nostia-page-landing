@@ -161,7 +161,7 @@ function exportBlock({ session, navigate, billing, adventureId, version }) {
   wrap.append(status);
   if (!allowed) {
     wrap.append(el('p', { class: 'small muted',
-      text: 'CSV export is part of the Institutional plan.' }));
+      text: 'CSV export is part of the Campus plan.' }));
   }
   return wrap;
 }

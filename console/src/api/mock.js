@@ -85,13 +85,14 @@ export class MockBackend {
 
     this.billing = {
       1: {
-        tier: 'standard', label: 'Standard', status: 'active',
+        tier: 'orientation', label: 'Orientation', status: 'active',
         current_period_end: '2026-09-01T00:00:00Z', seats: 1,
         entitlements: {
-          adventures: 5, stops: 15, analytics: true, custom_branding: true,
+          adventures: 3, stops: 12, analytics: true, custom_branding: true,
           invite_codes: true, csv_export: false, multi_admin: false, assist_calls_per_day: 20,
+          sso: false,
         },
-        usage: { published_adventures: 1 },
+        usage: { published_adventures: 1, admins: 1, admin_limit: 1, can_add_admin: false },
         // Both false, because both are false in reality: no tier has a Stripe price and Stripe is
         // not configured. The console therefore renders the path that actually ships.
         purchasable: false,
@@ -103,26 +104,32 @@ export class MockBackend {
       // Stripe was never involved — so `can_publish` is the only honest signal here, and this
       // fixture exists to stop a screen that reads `status` alone from looking correct.
       2: {
-        tier: 'trial', label: 'Trial', status: 'trialing',
+        tier: 'pilot', label: 'Pilot', status: 'trialing',
         current_period_end: '2026-07-28T00:00:00Z', seats: null,
         entitlements: {
           adventures: 1, stops: 5, analytics: true, custom_branding: false,
-          invite_codes: false, csv_export: false, multi_admin: false, assist_calls_per_day: 3,
+          // TRUE on the free tier (§V2-9): pilots are distributed by printed QR, so
+          // gating codes would gate the experiment the tier exists to run.
+          invite_codes: true, csv_export: false, multi_admin: false, assist_calls_per_day: 3,
+          sso: false,
         },
-        usage: { published_adventures: 1 },
+        usage: { published_adventures: 1, admins: 1, admin_limit: 1, can_add_admin: false },
         purchasable: false,
         configured: false,
         can_publish: false,
         blocked_reason: 'trial_expired',
       },
       3: {
-        tier: 'trial', label: 'Trial', status: 'past_due',
+        tier: 'pilot', label: 'Pilot', status: 'past_due',
         current_period_end: '2026-07-20T00:00:00Z', seats: null,
         entitlements: {
           adventures: 1, stops: 5, analytics: true, custom_branding: false,
-          invite_codes: false, csv_export: false, multi_admin: false, assist_calls_per_day: 3,
+          // TRUE on the free tier (§V2-9): pilots are distributed by printed QR, so
+          // gating codes would gate the experiment the tier exists to run.
+          invite_codes: true, csv_export: false, multi_admin: false, assist_calls_per_day: 3,
+          sso: false,
         },
-        usage: { published_adventures: 1 },
+        usage: { published_adventures: 1, admins: 1, admin_limit: 1, can_add_admin: false },
         purchasable: false,
         configured: false,
         can_publish: false,
@@ -252,7 +259,7 @@ export class MockBackend {
     await pause(300);
     const status = this.billing[orgId];
     if (!status?.entitlements.csv_export) {
-      throw new ApiError('entitlement', 'CSV export is part of the Institutional plan.',
+      throw new ApiError('entitlement', 'CSV export is part of the Campus plan.',
                          { tier: status?.tier });
     }
     const analytics = await this.adventureAnalytics(orgId, adventureId, version);
