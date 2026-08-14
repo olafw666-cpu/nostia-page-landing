@@ -39,9 +39,15 @@ export function renderSignIn(root, { session, onSignedIn }) {
   if (config.backend === 'mock') {
     // Reachable via ?backend=mock. Saying so here stops the reasonable assumption that the
     // numbers on the next screen came from somewhere real.
-    card.append(notice('info', 'Sample data',
-      'This is the demo tour — any email and password will do, and every figure is invented. '
-      + 'Drop the ?backend=mock from the URL to sign in to your real organization.'));
+    card.append(notice('info', 'Demo tour — sample data',
+      'This signs you in as Demo University Student Affairs. Any email and password will do, '
+      + 'and every figure is invented. Drop the ?backend=mock from the URL to sign in to your '
+      + 'real organization.'));
+    // Prefilled so the tour is one click. The mock accepts any non-empty email; this
+    // only removes a form-filling step from a demo that is often driven one-handed,
+    // and the credentials are the seeded demo account's, not anyone's real ones.
+    email.value = 'demo-user-admin@demo.invalid';
+    password.value = 'demo';
   } else {
     // There is no self-serve signup: accounts are provisioned per organization. Without this,
     // a buyer's first experience of the console is a sign-in form with no way in.
