@@ -211,6 +211,21 @@ export class RestBackend {
 
   // ---- Distribution (read-only here; minting lives in the mobile app) -----
 
+  /**
+   * The printable QR for one invite code, as SVG source.
+   *
+   * routes.inviteQR has been defined since the console was written and nothing
+   * ever called it, so the one asset in this product that exists to be PRINTED
+   * was reachable only by hand-crafting an authenticated request. It is fetched
+   * as text rather than a blob because the print view inlines the markup — an
+   * object URL would be a second document the print stylesheet cannot reach.
+   */
+  async inviteQrSvg(orgId, codeId, { scale = 8 } = {}) {
+    const response = await this.#raw(
+      path(routes.inviteQR, { org: orgId, code: codeId }) + `?scale=${encodeURIComponent(scale)}`);
+    return response.text();
+  }
+
   async listInviteCodes(orgId) {
     const result = await this.#json(path(routes.inviteCodes, { org: orgId }));
     return result.invite_codes ?? [];

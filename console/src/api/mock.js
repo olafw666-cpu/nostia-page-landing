@@ -541,6 +541,31 @@ export class MockBackend {
     throw new ApiError('unavailable', 'Billing is not configured on this backend.');
   }
 
+  /**
+   * A placeholder, and deliberately one that cannot be mistaken for a real code.
+   *
+   * The mock has no QR encoder and should not grow one: duplicating a hand-rolled
+   * Reed-Solomon implementation would give the demo a second encoder to keep in
+   * step with the real one, and the failure mode of getting that wrong is a code
+   * that prints and does not scan. What it returns instead is a card that says
+   * so, so nobody takes the sample tour to a printer.
+   */
+  async inviteQrSvg(orgId, codeId) {
+    await pause(250);
+    const code = (this.invites[orgId] ?? []).find((c) => String(c.id) === String(codeId));
+    if (!code) throw new ApiError('not-found', 'No such invite code.');
+    const label = code.code.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    return [
+      '<svg xmlns="http://www.w3.org/2000/svg" width="264" height="264" viewBox="0 0 264 264">',
+      '<rect width="264" height="264" fill="#fff"/>',
+      '<rect x="12" y="12" width="240" height="240" fill="none" stroke="#111" stroke-width="2" stroke-dasharray="8 6"/>',
+      `<text x="132" y="120" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#111">Sample data</text>`,
+      `<text x="132" y="144" text-anchor="middle" font-family="monospace" font-size="19" fill="#111">${label}</text>`,
+      `<text x="132" y="172" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#555">No scannable code on this backend</text>`,
+      '</svg>',
+    ].join('');
+  }
+
   async listInviteCodes(orgId) {
     await pause(250);
     return this.invites[orgId] ?? [];
