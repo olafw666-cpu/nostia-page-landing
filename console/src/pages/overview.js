@@ -83,9 +83,9 @@ function adventureRow(row, onOpen) {
   const figure = el('div', { class: 'figure' });
   if (isSuppressed(row.starts)) {
     figure.append(el('span', { class: 'muted', text: '—' }),
-                  el('small', { text: 'too few walkers yet' }));
+                  el('small', { text: 'too few students yet' }));
   } else {
-    figure.append(String(row.starts ?? 0), el('small', { text: 'walkers' }));
+    figure.append(String(row.starts ?? 0), el('small', { text: 'students' }));
   }
 
   return el('button', { class: 'list-item', onClick: onOpen },

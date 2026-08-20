@@ -243,7 +243,7 @@ function stopCard(session, adventure, step, { editable, onChanged }) {
   const dwell = el('input', { type: 'number', value: step.dwell_seconds ?? 90, disabled: !editable });
 
   card.append(
-    field('What the visitor sees', text),
+    field('What the student sees', text),
     field('Photo criterion', criterion),
     el('div', { class: 'row', style: { gap: '8px' } },
       field('Latitude', lat), field('Longitude', lng)),
@@ -315,7 +315,7 @@ function stopCard(session, adventure, step, { editable, onChanged }) {
 
     card.append(
       field(step.has_reference ? 'Replace reference photo' : 'Reference photo', file),
-      el('p', { class: 'small muted', text: 'Reference photos are used by the verifier and are never shown to visitors.' }),
+      el('p', { class: 'small muted', text: 'Reference photos are used by the verifier and are never shown to students.' }),
       status,
       el('div', { class: 'row', style: { gap: '8px' } }, save, approve, remove));
   } else {
@@ -366,7 +366,7 @@ function publishSection(session, adventure, failures, { navigate, onChanged }) {
       body.append(el('p', { class: 'small muted', text: 'Publishing is done by the organization owner.' }));
     }
   } else if (adventure.status === 'published' && session.isOwner) {
-    body.append(el('p', { class: 'small muted', text: 'Archiving stops new walkers from starting this. Anyone part-way through keeps their run.' }));
+    body.append(el('p', { class: 'small muted', text: 'Archiving stops new students from starting this. Anyone part-way through keeps their run.' }));
     const archive = el('button', { class: 'btn ghost', text: 'Archive' });
     archive.addEventListener('click', async () => {
       // eslint-disable-next-line no-alert

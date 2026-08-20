@@ -141,10 +141,20 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-
 }
 .org-switch label { display: block; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px; }
 .org-switch select {
-  width: 100%; font: inherit; font-size: 14px; color: var(--text);
+  /* Borderless inside its own bordered wrapper — but it still gets the chevron,
+     so it does not read as a different KIND of control from the selects in the
+     authoring form. */
+  width: 100%; box-sizing: border-box; font: inherit; font-size: 14px; color: var(--text);
   background: transparent; border: none; cursor: pointer;
+  appearance: none; -webkit-appearance: none;
+  padding-right: 22px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238A94A0' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right center;
 }
-.org-switch select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.org-switch:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.org-switch { transition: border-color .15s ease, box-shadow .15s ease; }
+.org-switch select:focus-visible { outline: none; }
 
 .sidebar-foot { margin-top: auto; font-size: 11px; color: var(--text-3); line-height: 1.5; }
 .sidebar-foot code { font-family: var(--mono); font-size: 10px; word-break: break-all; }
@@ -251,14 +261,143 @@ button.btn[disabled] { opacity: .45; cursor: not-allowed; }
 button.btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--stroke); }
 button.btn.link { background: transparent; color: var(--accent); padding: 4px 0; font-weight: 600; }
 
-.field { display: block; margin-bottom: 13px; }
-.field span { display: block; font-size: 12px; color: var(--text-2); margin-bottom: 5px; }
-.field input, .field select {
-  width: 100%; font: inherit; font-size: 14px; padding: 10px 12px;
-  border: 1px solid var(--stroke); border-radius: var(--radius-sm);
-  background: var(--card); color: var(--text);
+/* ---------- Form controls ----------
+
+   Every control an admin touches is here, and they are styled TOGETHER rather
+   than one selector per element. The previous rule covered `input` and `select`
+   only, which left three controls falling back to browser defaults: the textarea
+   behind every stop description, the number inputs on latitude/longitude/radius/
+   dwell, and the file picker for reference photos. A form where two fields are
+   designed and the one under them is a raw OS widget reads as unfinished, and
+   the authoring screen is the one an admin spends an hour in. */
+
+.field { display: block; margin-bottom: 16px; }
+.field > span {
+  display: block;
+  font-size: 12px; font-weight: 500; letter-spacing: .01em;
+  color: var(--text-2); margin-bottom: 6px;
 }
-.field input:focus-visible, .field select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.field input,
+.field select,
+.field textarea {
+  /* One shared box so a text input and the textarea under it line up exactly. */
+  width: 100%; box-sizing: border-box;
+  font: inherit; font-size: 14px; line-height: 1.45;
+  padding: 10px 12px;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-sm);
+  /* Colour and shadow only — never a transition on layout properties, which is
+     what makes a focus state feel like a jump rather than a highlight. */
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.field input::placeholder,
+.field textarea::placeholder { color: var(--text-3); }
+
+.field input:hover:not(:disabled),
+.field select:hover:not(:disabled),
+.field textarea:hover:not(:disabled) { border-color: var(--text-3); }
+
+/* A soft ring instead of the old 2px outline. `outline` is drawn outside the
+   border box and cannot be rounded to match the corner radius, so on a 10px
+   radius it rendered as a square bracket around a rounded field. A box-shadow
+   ring follows the radius exactly. The outline is kept as a transparent
+   fallback for forced-colours mode, where box-shadow is discarded. */
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  outline: 2px solid transparent; outline-offset: 1px;
+}
+
+.field input:disabled,
+.field select:disabled,
+.field textarea:disabled {
+  background: var(--card-2);
+  color: var(--text-3);
+  cursor: not-allowed;
+}
+
+/* A published adventure is immutable, so most of the authoring form is disabled
+   rather than hidden. It has to read as "locked", not as "broken". */
+.field input:disabled::placeholder,
+.field textarea:disabled::placeholder { color: transparent; }
+
+.field textarea {
+  /* Horizontal drag would let a stop description escape its card. */
+  resize: vertical;
+  min-height: 72px;
+}
+
+/* Native select arrow replaced so the control matches the inputs beside it.
+   The chevron is a fixed mid-grey rather than currentColor: a data-URI cannot
+   read a CSS variable, and this grey clears 3:1 against both the light card and
+   the dark one. */
+.field select {
+  appearance: none; -webkit-appearance: none;
+  padding-right: 34px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238A94A0' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  cursor: pointer;
+}
+.field select:disabled { cursor: not-allowed; opacity: .7; }
+
+/* Spinners removed. These fields carry a latitude and a dwell in seconds — both
+   are typed or pasted, never nudged one step at a time, and the arrows only
+   narrow the text area and invite a mis-click that silently moves a geofence. */
+.field input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
+.field input[type="number"]::-webkit-outer-spin-button,
+.field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* The file picker is the worst default on the page — an unstyled OS button
+   whose label is set by the browser. The wrapper keeps our border; the button
+   inside it is restyled to match .btn.ghost. */
+.field input[type="file"],
+input[type="file"] {
+  width: 100%; box-sizing: border-box;
+  font: inherit; font-size: 13px;
+  padding: 8px 10px;
+  color: var(--text-2);
+  background: var(--card);
+  border: 1px dashed var(--stroke);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+input[type="file"]:hover:not(:disabled) { border-color: var(--accent); background: var(--card-2); }
+/* ::-webkit-file-upload-button is the alias Safari used before 14.1. Listed as a
+   separate rule, not a selector list: a browser that does not know one of the two
+   discards the WHOLE list, which would drop the styling on both. */
+input[type="file"]::-webkit-file-upload-button {
+  font: inherit; font-size: 13px; font-weight: 600;
+  margin-right: 12px; padding: 6px 12px;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--stroke);
+  border-radius: 8px;
+  cursor: pointer;
+}
+input[type="file"]::file-selector-button {
+  font: inherit; font-size: 13px; font-weight: 600;
+  margin-right: 12px; padding: 6px 12px;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--stroke);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease;
+}
+input[type="file"]::file-selector-button:hover { border-color: var(--accent); color: var(--accent); }
+input[type="file"]:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  outline: 2px solid transparent;
+}
 
 .tabs { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
 .tabs button {

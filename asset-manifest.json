@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.f3a0e7b2.css",
-    "main.js": "/static/js/main.c06706b4.js",
+    "main.js": "/static/js/main.f22f7894.js",
     "static/js/453.07324b4d.chunk.js": "/static/js/453.07324b4d.chunk.js",
     "static/media/WC.jpg": "/static/media/WC.86f370c536e019d2e136.jpg",
     "static/media/NostiaAbout.png": "/static/media/NostiaAbout.2180ac669ec2c1afcf78.png",
@@ -14,11 +14,11 @@
     "static/media/RS.jpg": "/static/media/RS.605ca602ec814b4dfd00.jpg",
     "index.html": "/index.html",
     "main.f3a0e7b2.css.map": "/static/css/main.f3a0e7b2.css.map",
-    "main.c06706b4.js.map": "/static/js/main.c06706b4.js.map",
+    "main.f22f7894.js.map": "/static/js/main.f22f7894.js.map",
     "453.07324b4d.chunk.js.map": "/static/js/453.07324b4d.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f3a0e7b2.css",
-    "static/js/main.c06706b4.js"
+    "static/js/main.f22f7894.js"
   ]
 }

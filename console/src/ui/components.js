@@ -46,7 +46,7 @@ export function metric({ label, value, caption }) {
 
 export function suppressionNote(threshold = 5) {
   return notice('info', `Some figures stay hidden until ${threshold} people have walked this`,
-    `Aggregates over a handful of people can identify them, so Nostia withholds those cells. They appear on their own once ${threshold} distinct walkers have taken part.`);
+    `Aggregates over a handful of people can identify them, so Nostia withholds those cells. They appear on their own once ${threshold} distinct students have taken part.`);
 }
 
 // ---------------------------------------------------------------------------
