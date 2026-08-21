@@ -263,13 +263,20 @@ button.btn.link { background: transparent; color: var(--accent); padding: 4px 0;
 
 /* ---------- Form controls ----------
 
-   Every control an admin touches is here, and they are styled TOGETHER rather
-   than one selector per element. The previous rule covered `input` and `select`
-   only, which left three controls falling back to browser defaults: the textarea
-   behind every stop description, the number inputs on latitude/longitude/radius/
-   dwell, and the file picker for reference photos. A form where two fields are
-   designed and the one under them is a raw OS widget reads as unfinished, and
-   the authoring screen is the one an admin spends an hour in. */
+   Styled by ELEMENT, not by wrapper. These rules used to be scoped under .field,
+   which meant a control only looked designed if someone remembered to wrap it —
+   and two did not. The "New adventure title" box and the "Stop title" box sit
+   inline next to their buttons rather than in a labelled field, so both rendered
+   as raw OS widgets on the authoring screen, directly beside a styled button.
+   That is the first screen an admin meets and the one they spend an hour in.
+
+   Scoping to a wrapper makes correct styling something you can forget. Scoping to
+   the element makes it the default and the next control added is covered for
+   free. .field is now layout only: label, spacing, full width.
+
+   Two deliberate exceptions, both winning on specificity rather than order:
+   .org-switch select is borderless inside its own bordered shell, and
+   input[type="file"] carries the dashed drop-zone treatment. */
 
 .field { display: block; margin-bottom: 16px; }
 .field > span {
@@ -278,9 +285,9 @@ button.btn.link { background: transparent; color: var(--accent); padding: 4px 0;
   color: var(--text-2); margin-bottom: 6px;
 }
 
-.field input,
-.field select,
-.field textarea {
+input:not([type="file"]),
+select,
+textarea {
   /* One shared box so a text input and the textarea under it line up exactly. */
   width: 100%; box-sizing: border-box;
   font: inherit; font-size: 14px; line-height: 1.45;
@@ -294,29 +301,29 @@ button.btn.link { background: transparent; color: var(--accent); padding: 4px 0;
   transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
 }
 
-.field input::placeholder,
-.field textarea::placeholder { color: var(--text-3); }
+input::placeholder,
+textarea::placeholder { color: var(--text-3); }
 
-.field input:hover:not(:disabled),
-.field select:hover:not(:disabled),
-.field textarea:hover:not(:disabled) { border-color: var(--text-3); }
+input:not([type="file"]):hover:not(:disabled),
+select:hover:not(:disabled),
+textarea:hover:not(:disabled) { border-color: var(--text-3); }
 
 /* A soft ring instead of the old 2px outline. `outline` is drawn outside the
    border box and cannot be rounded to match the corner radius, so on a 10px
    radius it rendered as a square bracket around a rounded field. A box-shadow
    ring follows the radius exactly. The outline is kept as a transparent
    fallback for forced-colours mode, where box-shadow is discarded. */
-.field input:focus-visible,
-.field select:focus-visible,
-.field textarea:focus-visible {
+input:not([type="file"]):focus-visible,
+select:focus-visible,
+textarea:focus-visible {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
   outline: 2px solid transparent; outline-offset: 1px;
 }
 
-.field input:disabled,
-.field select:disabled,
-.field textarea:disabled {
+input:disabled,
+select:disabled,
+textarea:disabled {
   background: var(--card-2);
   color: var(--text-3);
   cursor: not-allowed;
@@ -324,10 +331,10 @@ button.btn.link { background: transparent; color: var(--accent); padding: 4px 0;
 
 /* A published adventure is immutable, so most of the authoring form is disabled
    rather than hidden. It has to read as "locked", not as "broken". */
-.field input:disabled::placeholder,
-.field textarea:disabled::placeholder { color: transparent; }
+input:disabled::placeholder,
+textarea:disabled::placeholder { color: transparent; }
 
-.field textarea {
+textarea {
   /* Horizontal drag would let a stop description escape its card. */
   resize: vertical;
   min-height: 72px;
@@ -337,7 +344,7 @@ button.btn.link { background: transparent; color: var(--accent); padding: 4px 0;
    The chevron is a fixed mid-grey rather than currentColor: a data-URI cannot
    read a CSS variable, and this grey clears 3:1 against both the light card and
    the dark one. */
-.field select {
+select {
   appearance: none; -webkit-appearance: none;
   padding-right: 34px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238A94A0' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
@@ -345,19 +352,18 @@ button.btn.link { background: transparent; color: var(--accent); padding: 4px 0;
   background-position: right 12px center;
   cursor: pointer;
 }
-.field select:disabled { cursor: not-allowed; opacity: .7; }
+select:disabled { cursor: not-allowed; opacity: .7; }
 
 /* Spinners removed. These fields carry a latitude and a dwell in seconds — both
    are typed or pasted, never nudged one step at a time, and the arrows only
    narrow the text area and invite a mis-click that silently moves a geofence. */
-.field input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
-.field input[type="number"]::-webkit-outer-spin-button,
-.field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
 /* The file picker is the worst default on the page — an unstyled OS button
    whose label is set by the browser. The wrapper keeps our border; the button
    inside it is restyled to match .btn.ghost. */
-.field input[type="file"],
 input[type="file"] {
   width: 100%; box-sizing: border-box;
   font: inherit; font-size: 13px;
@@ -398,6 +404,14 @@ input[type="file"]:focus-visible {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
   outline: 2px solid transparent;
 }
+
+/* An input sharing a .row with its button — "New adventure title", "Stop title".
+   Both controls now carry width:100%, and inside a flex row that makes them
+   fight: the input claims the whole line and the button gets squeezed to its
+   text. Let the input take the slack and hold the button at its natural size. */
+.row > input,
+.row > select { flex: 1 1 auto; min-width: 0; width: auto; }
+.row > .btn { flex: 0 0 auto; }
 
 .tabs { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
 .tabs button {
