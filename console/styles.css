@@ -2,6 +2,17 @@
    Light and dark are both first-class: a finance screen read at 11pm should not be a flashbang. */
 
 :root {
+  /* Drives how the BROWSER paints native widgets — dropdown popups, scrollbars,
+     date pickers, the caret. index.html carries a <meta name="color-scheme">,
+     which is a document-level hint and does NOT reach widget painting; this
+     property does.
+
+     Without it the organisation switcher opened a WHITE popup in dark mode while
+     its <option> children inherited the select's near-white --text, so every
+     unselected organisation was white-on-white and effectively invisible. Only
+     the row under the OS highlight could be read. */
+  color-scheme: light dark;
+
   --accent: #2E7D32;
   --accent-soft: #E8F3E9;
   /* Text/icon colour that sits ON an accent fill. Split out from --text because
@@ -353,6 +364,25 @@ select {
   cursor: pointer;
 }
 select:disabled { cursor: not-allowed; opacity: .7; }
+
+/* The dropdown popup is drawn by the OS, not by this stylesheet, and it does not
+   inherit the select's background — only its COLOUR. That asymmetry is the whole
+   bug: light text arrives over a background the page never set. Paint both here,
+   explicitly, so the pair can never drift apart again.
+
+   Firefox and Chrome on Windows and Linux honour this. Safari and Chrome on
+   macOS ignore option colours entirely and render a system popup — which is why
+   color-scheme above is the primary fix and this is the backstop. */
+option {
+  background-color: var(--card);
+  color: var(--text);
+}
+option:checked,
+option:hover { background-color: var(--accent-soft); color: var(--text); }
+
+/* Same treatment inside the switcher, whose select is deliberately transparent —
+   a transparent select must not hand a transparent popup to the compositor. */
+.org-switch option { background-color: var(--card); color: var(--text); }
 
 /* Spinners removed. These fields carry a latitude and a dwell in seconds — both
    are typed or pasted, never nudged one step at a time, and the arrows only
