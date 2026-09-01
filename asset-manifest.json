@@ -1,24 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.3af42a29.css",
-    "main.js": "/static/js/main.64b943b6.js",
+    "main.css": "/static/css/main.6d6df883.css",
+    "main.js": "/static/js/main.afb5d3fb.js",
     "static/js/453.07324b4d.chunk.js": "/static/js/453.07324b4d.chunk.js",
-    "static/media/WC.jpg": "/static/media/WC.86f370c536e019d2e136.jpg",
-    "static/media/NostiaAbout.png": "/static/media/NostiaAbout.2180ac669ec2c1afcf78.png",
     "static/media/nostia-transparent.png": "/static/media/nostia-transparent.8566c7261771087fc44c.png",
-    "static/media/logo.png": "/static/media/logo.cde37a223a1e38241dc4.png",
-    "static/media/shreya.png": "/static/media/shreya.02989b99ad86854bd354.png",
-    "static/media/joehannon.png": "/static/media/joehannon.f6075b5425ee36373608.png",
     "static/media/olaf-portrait.jpg": "/static/media/olaf-portrait.a7d7a194e19357fc34ff.jpg",
-    "static/media/OW.jpg": "/static/media/OW.12f0909f860a18205bab.jpg",
-    "static/media/RS.jpg": "/static/media/RS.605ca602ec814b4dfd00.jpg",
     "index.html": "/index.html",
-    "main.3af42a29.css.map": "/static/css/main.3af42a29.css.map",
-    "main.64b943b6.js.map": "/static/js/main.64b943b6.js.map",
+    "main.6d6df883.css.map": "/static/css/main.6d6df883.css.map",
+    "main.afb5d3fb.js.map": "/static/js/main.afb5d3fb.js.map",
     "453.07324b4d.chunk.js.map": "/static/js/453.07324b4d.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.3af42a29.css",
-    "static/js/main.64b943b6.js"
+    "static/css/main.6d6df883.css",
+    "static/js/main.afb5d3fb.js"
   ]
 }
