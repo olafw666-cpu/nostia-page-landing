@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.6d6df883.css",
-    "main.js": "/static/js/main.afb5d3fb.js",
+    "main.css": "/static/css/main.cc33d9cc.css",
+    "main.js": "/static/js/main.a7bb3604.js",
     "static/js/453.07324b4d.chunk.js": "/static/js/453.07324b4d.chunk.js",
     "static/media/nostia-transparent.png": "/static/media/nostia-transparent.8566c7261771087fc44c.png",
     "static/media/olaf-portrait.jpg": "/static/media/olaf-portrait.a7d7a194e19357fc34ff.jpg",
     "index.html": "/index.html",
-    "main.6d6df883.css.map": "/static/css/main.6d6df883.css.map",
-    "main.afb5d3fb.js.map": "/static/js/main.afb5d3fb.js.map",
+    "main.cc33d9cc.css.map": "/static/css/main.cc33d9cc.css.map",
+    "main.a7bb3604.js.map": "/static/js/main.a7bb3604.js.map",
     "453.07324b4d.chunk.js.map": "/static/js/453.07324b4d.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.6d6df883.css",
-    "static/js/main.afb5d3fb.js"
+    "static/css/main.cc33d9cc.css",
+    "static/js/main.a7bb3604.js"
   ]
 }
