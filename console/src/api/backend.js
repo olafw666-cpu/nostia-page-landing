@@ -33,6 +33,18 @@ import { MockBackend } from './mock.js';
  * reviseAdventure(orgId, advId)                    → adventure
  * ```
  *
+ * The school layer (clubs, campus events, attendance, moderation, outbox, mock SSO) adds:
+ *
+ * ```
+ * ssoConfig() / ssoExchange({code, code_verifier, redirect_uri})
+ * getPolicy / updatePolicy                       listClubs / createClub / decideClub / setClubStatus
+ * listMembers                                    listEvents / createEvent / cancelEvent
+ * eventAttendance / uploadAttendancePhoto / fileAttendance / openCheckin / waiveAttendance
+ * attendanceCompliance / attendanceAnalytics / studentAttendance / studentDetail / exportAttendanceCSV
+ * getSurvey / updateSurvey                       listModeration / hideChatMessage
+ * listOutbox / previewOutbox / sendOutbox / loadOutbox
+ * ```
+ *
  * Two implementations satisfy it: `RestBackend` (HTTP, speaking docs/BACKEND_CONTRACT.md) and
  * `MockBackend` (in-memory). The pages cannot tell which one they are running on — which is the
  * test that the abstraction is real rather than decorative.

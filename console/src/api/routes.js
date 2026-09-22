@@ -33,6 +33,33 @@ export const routes = {
 
   inviteCodes: '/orgs/{org}/invite-codes',
   inviteQR: '/orgs/{org}/invite-codes/{code}/qr.svg',
+
+  // The school layer — clubs, campus events, attendance, moderation, outbox. {org} is the
+  // SCHOOL here; the console is the school administrators' surface, and club leaders use the app.
+  ssoConfig: '/auth/sso/config',
+  ssoToken: '/auth/sso/token',
+  policy: '/orgs/{org}/policy',
+  clubs: '/orgs/{org}/clubs',
+  clubDecision: '/orgs/{org}/clubs/{club}/decision',
+  clubStatus: '/orgs/{org}/clubs/{club}/status',
+  members: '/orgs/{org}/members',
+  events: '/orgs/{org}/events',
+  eventCancel: '/orgs/{org}/events/{event}/cancel',
+  eventAttendance: '/orgs/{org}/events/{event}/attendance',
+  eventPhoto: '/orgs/{org}/events/{event}/attendance/photo',
+  eventCheckinCode: '/orgs/{org}/events/{event}/checkin-code',
+  eventWaive: '/orgs/{org}/events/{event}/attendance/waive',
+  compliance: '/orgs/{org}/attendance/compliance',
+  attendanceAnalytics: '/orgs/{org}/attendance/analytics',
+  attendanceStudents: '/orgs/{org}/attendance/students',
+  attendanceStudent: '/orgs/{org}/attendance/students/{user}',
+  attendanceCSV: '/orgs/{org}/attendance.csv',
+  survey: '/orgs/{org}/survey',
+  moderation: '/orgs/{org}/moderation',
+  moderationHide: '/orgs/{org}/moderation/{message}/hide',
+  outbox: '/orgs/{org}/outbox',
+  outboxPreview: '/orgs/{org}/outbox/preview',
+  outboxMessage: '/orgs/{org}/outbox/{message}',
 };
 
 /** Substitutes {org}, {adventure}, {code}. */

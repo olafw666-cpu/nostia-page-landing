@@ -508,3 +508,83 @@ input[type="file"]:focus-visible {
 
 /* Wide content scrolls inside itself; the page body never scrolls sideways. */
 .scroll-x { overflow-x: auto; }
+
+/* ======================================================================
+   School layer — clubs, campus events, attendance, students, outbox.
+   ====================================================================== */
+
+.grid-4 { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+
+/* Chart series: slots 1–3 of the reference categorical palette (dataviz skill),
+   which validate all-pairs in BOTH modes. Dark steps are selected for the dark
+   surface, not flipped. Text never wears these — only marks do. */
+:root { --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; }
+@media (prefers-color-scheme: dark) {
+  :root { --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; }
+}
+
+/* ---------- Tables ---------- */
+table.data { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--card);
+  border: 1px solid var(--stroke); border-radius: var(--radius); overflow: hidden; }
+table.data th { text-align: left; font-size: 12px; font-weight: 600; color: var(--text-3);
+  padding: 10px 12px; border-bottom: 1px solid var(--stroke); background: var(--card-2); white-space: nowrap; }
+table.data td { padding: 10px 12px; border-bottom: 1px solid var(--stroke); vertical-align: top; }
+table.data tr:last-child td { border-bottom: 0; }
+table.data .num { text-align: right; font-variant-numeric: tabular-nums; }
+table.data tr.clickable { cursor: pointer; }
+table.data tr.clickable:hover td { background: var(--card-2); }
+table.data tr.clickable:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+/* ---------- Charts ---------- */
+.chart-wrap { margin: 0; background: var(--card); border: 1px solid var(--stroke); border-radius: var(--radius); padding: 14px 16px; }
+.chart-wrap figcaption { margin-bottom: 6px; }
+svg.chart { width: 100%; height: auto; display: block; overflow: visible; }
+svg.chart .axis { stroke: var(--text-3); stroke-width: 1; }
+svg.chart .grid, svg.chart .row-rule { stroke: var(--stroke); stroke-width: 1; }
+svg.chart .tick { fill: var(--text-3); font-size: 11px; font-family: var(--sans); }
+svg.chart .label { fill: var(--text-2); font-size: 12px; font-family: var(--sans); }
+svg.chart .val { fill: var(--text-2); font-size: 12px; font-family: var(--mono); }
+svg.chart .flag { fill: var(--warning); font-size: 12px; font-weight: 700; font-family: var(--sans); }
+svg.chart .hit-target { fill: transparent; }
+svg.chart .bar.s1 { fill: var(--series-1); }
+svg.chart .hit:hover .bar { opacity: .85; }
+svg.chart .range.s2 { stroke: var(--series-2); stroke-width: 6; stroke-linecap: round; opacity: .35; }
+/* A 2px surface ring keeps overlapping markers separable. */
+svg.chart .dot { stroke: var(--card); stroke-width: 2; }
+svg.chart .dot.s1 { fill: var(--series-1); }
+svg.chart .dot.s2 { fill: var(--series-2); }
+svg.chart .dot.s3 { fill: var(--series-3); }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; color: var(--text-2); margin-bottom: 8px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.swatch { display: inline-block; width: 10px; height: 10px; }
+.swatch.round { border-radius: 50%; }
+.swatch.diamond { transform: rotate(45deg); width: 9px; height: 9px; }
+.swatch.s1 { background: var(--series-1); }
+.swatch.s2 { background: var(--series-2); }
+.swatch.s3 { background: var(--series-3); }
+
+/* ---------- Forms and bits ---------- */
+label.check { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; margin: 6px 0; cursor: pointer; }
+label.check input { margin-top: 3px; flex: 0 0 auto; width: auto; }
+label.check.option { padding: 8px 0; }
+fieldset.plain { border: 0; padding: 0; margin: 12px 0; }
+fieldset.plain legend { font-size: 13px; color: var(--text-2); margin-bottom: 4px; padding: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 4px 0 8px 24px; align-items: center; }
+.chips > select { width: auto; }
+label.chip { margin: 0; }
+.methods { margin-top: 8px; }
+.survey-editor .question { padding: 12px; }
+.survey-editor .question .row { gap: 8px; flex-wrap: wrap; }
+.big-code { font-family: var(--mono); font-size: clamp(40px, 9vw, 72px); font-weight: 800;
+  letter-spacing: .18em; text-align: center; padding: 18px 0; color: var(--text); }
+blockquote.quote { margin: 8px 0; padding: 8px 12px; border-left: 3px solid var(--stroke); color: var(--text-2); }
+.pre { white-space: pre-wrap; }
+dl.answers { display: grid; grid-template-columns: minmax(140px, auto) 1fr; gap: 6px 16px; margin: 10px 0 0; font-size: 14px; }
+dl.answers dt { color: var(--text-3); }
+dl.answers dd { margin: 0; }
+.owes { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.owes .btn.link { padding: 0; font-size: 13px; text-align: left; }
+.ok-text { color: var(--accent); }
+.bad-text { color: var(--danger); }
+.signin .sso { margin-top: 14px; }
+.signin .divider { text-align: center; font-size: 12px; color: var(--text-3); margin: 0 0 12px; }

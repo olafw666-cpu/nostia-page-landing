@@ -24,7 +24,14 @@ export const config = {
    * serves none of the org_* routes this console calls. The org backend is a separate deployment
    * on its own host, so the two never share a cert, a database, or a Stripe webhook endpoint.
    */
-  apiBaseURL: 'https://org.nostia.io/api',
+  //
+  // ONE exception, and it is still this file deciding: when the console is served by a backend
+  // host itself (the demo instance serves its own copy at /console/), that host injects
+  // <meta name="nostia-api-base" content="/api"> and the console talks to the host that served
+  // it. On nostia.io there is no such tag and nothing changes.
+  apiBaseURL: (typeof document !== 'undefined'
+    && document.querySelector('meta[name="nostia-api-base"]')?.getAttribute('content'))
+    || 'https://org.nostia.io/api',
 
   /** Where "get in touch" goes when a tier has no Stripe price configured yet. */
   salesContact: 'mailto:sales@nostia.io?subject=Nostia%20for%20organizations',

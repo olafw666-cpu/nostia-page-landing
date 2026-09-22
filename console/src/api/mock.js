@@ -1,4 +1,5 @@
 import { ApiError } from './errors.js';
+import { MockSchool } from './mockSchool.js';
 
 const SUPPRESSED = { suppressed: true, reason: 'small_n', threshold: 5 };
 const rate = (n, denominator) => ({ n, denominator, rate: denominator ? n / denominator : null });
@@ -34,17 +35,28 @@ const step = (id, order, title, text, criterion, lat, lng, radius, dwell) => ({
 export class MockBackend {
   constructor() {
     this.signedIn = false;
-    this.user = { id: 1, username: 'olaf', email: 'olaf@nostia.io' };
+    // Dana, the school administrator in nostia-pivot/demo/fixture.json. Org 1 used to be
+    // "Lakeside University Student Affairs" while the seeded server said "Demo University" — the
+    // drift sessions_memories.md recorded. It is now the fixture's name, verbatim.
+    this.user = { id: 101, username: 'demo-user-dana', email: 'demo-user-dana@demo.invalid' };
     this.memberships = [
       // Fictional, and campus-shaped because the product is: BUSINESS_MODEL_V2
       // moved the buyer from tourism boards to colleges.
-      { org_id: 1, name: 'Lakeside University Student Affairs', role: 'owner',
-        branding: { accent_color: '#A3B1A1', logo_url: null } },
-      { org_id: 2, name: 'Riverside College Orientation', role: 'owner', branding: null },
+      { org_id: 1, name: 'Demo University Student Affairs', role: 'owner', org_type: 'institution',
+        institution_id: 1, club_status: null, branding: { accent_color: '#A3B1A1', logo_url: null } },
+      { org_id: 2, name: 'Riverside College Orientation', role: 'owner', org_type: 'community',
+        institution_id: null, club_status: null, branding: null },
       // An admin-only membership, so the console's owner gate is visible in the sample data
       // instead of being a code path nobody ever sees.
-      { org_id: 3, name: 'Northgate Residence Life', role: 'admin', branding: null },
+      { org_id: 3, name: 'Northgate Residence Life', role: 'admin', org_type: 'community',
+        institution_id: null, club_status: null, branding: null },
+      // A CLUB membership with a managing role (Dana advises the Hiking Club). The console must
+      // not offer it: club leaders run their clubs from the app. Present so that exclusion is
+      // exercised by the sample data and the smoke test, not merely written.
+      { org_id: 11, name: 'Demo University Hiking Club', role: 'admin', org_type: 'club',
+        institution_id: 1, club_status: 'active', branding: null },
     ];
+    this.school = new MockSchool();
 
     this.adventures = {
       1: [
@@ -258,6 +270,59 @@ export class MockBackend {
   }
 
   async signOut() { this.signedIn = false; }
+
+  // ---- Mock SSO ------------------------------------------------------------
+  // No redirect in mock mode — there is no identity provider page to visit — so the "exchange"
+  // signs in as Dana directly. Session.beginSso() knows the difference.
+
+  async ssoConfig() {
+    return { enabled: true, mock: true, provider: 'demo-university-mock',
+      institution: 'Demo University Student Affairs', button_label: 'Sign in with Demo University SSO',
+      requires_passcode: false };
+  }
+
+  async ssoExchange() {
+    await pause(300);
+    this.signedIn = true;
+    return { token: 'mock-sso-token', refreshToken: null, user: this.user, memberships: this.memberships,
+      sso: { provider: 'demo-university-mock', subject: 'dana', mock: true } };
+  }
+
+  // ---- School layer (see mockSchool.js) --------------------------------------
+
+  async getPolicy() { await pause(150); return this.school.getPolicy(); }
+  async updatePolicy(orgId, patch) { await pause(200); return this.school.updatePolicy(patch); }
+  async listClubs() { await pause(200); return this.school.listClubs(); }
+  async createClub(orgId, fields) { await pause(250); return this.school.createClub(fields); }
+  async decideClub(orgId, clubId, decision, note) { await pause(200); return this.school.decideClub(clubId, decision, note); }
+  async setClubStatus(orgId, clubId, status, note) { await pause(200); return this.school.setClubStatus(clubId, status, note); }
+  async listMembers() { await pause(200); return this.school.listMembers(); }
+  async listEvents(orgId) { await pause(200); return this.school.listEvents(orgId); }
+  async createEvent(orgId, fields) { await pause(250); return this.school.createEvent(fields); }
+  async cancelEvent(orgId, eventId) { await pause(150); return this.school.cancelEvent(eventId); }
+  async eventAttendance(orgId, eventId) { await pause(200); return this.school.eventAttendance(orgId, eventId); }
+  async uploadAttendancePhoto(orgId, eventId, file, claimedCount) {
+    await pause(900);
+    return this.school.uploadAttendancePhoto(eventId, claimedCount);
+  }
+  async fileAttendance(orgId, eventId, fields) { await pause(250); return this.school.fileAttendance(orgId, eventId, fields); }
+  async openCheckin(orgId, eventId) { await pause(150); return this.school.openCheckin(eventId); }
+  async waiveAttendance(orgId, eventId, note) { await pause(200); return this.school.waiveAttendance(orgId, eventId, note); }
+  async attendanceCompliance() { await pause(250); return this.school.compliance(); }
+  async attendanceAnalytics(orgId, category) { await pause(250); return this.school.analytics(category); }
+  async studentAttendance() { await pause(250); return this.school.students(); }
+  async studentDetail(orgId, userId) { await pause(200); return this.school.studentDetail(userId); }
+  async exportAttendanceCSV(orgId, category) {
+    return { blob: new Blob([this.school.csv(category)], { type: 'text/csv' }), filename: `attendance-${category}.csv` };
+  }
+  async getSurvey(orgId, category) { await pause(150); return this.school.getSurvey(category); }
+  async updateSurvey(orgId, category, questions) { await pause(200); return this.school.updateSurvey(category, questions); }
+  async listModeration() { await pause(200); return this.school.listModeration(); }
+  async hideChatMessage(orgId, messageId, reason) { await pause(150); return this.school.hideChatMessage(messageId, reason); }
+  async listOutbox() { await pause(200); return this.school.listOutbox(); }
+  async previewOutbox(orgId, audience) { await pause(150); return this.school.previewOutbox(audience); }
+  async sendOutbox(orgId, fields) { await pause(250); return this.school.sendOutbox(fields); }
+  async loadOutbox(orgId, messageId) { await pause(150); return this.school.loadOutbox(messageId); }
 
   async listAdventures(orgId) {
     await pause(250);

@@ -1,6 +1,7 @@
 import { config } from '../config.js';
 
 const STORAGE_KEY = 'nostia.console.session';
+const SSO_KEY = 'nostia.console.sso';
 
 /**
  * Identity, the backend handle, and which organization is selected.
@@ -42,9 +43,25 @@ export class Session {
 
   get isSignedIn() { return Boolean(this.user); }
 
-  /** Organizations this user can operate on at all — owner or admin. */
+  /**
+   * Organizations this user can operate on at all — owner or admin — EXCEPT clubs.
+   *
+   * The console is the school administrators' surface. A club's leader is its owner, so without
+   * this a student president signing in here would get a console for their chess club; club
+   * leaders run their clubs from the app instead, where the room photo and the check-in code live.
+   */
   get manageableMemberships() {
-    return this.memberships.filter((m) => MANAGING_ROLES.includes(m.role));
+    return this.memberships.filter((m) => MANAGING_ROLES.includes(m.role) && m.org_type !== 'club');
+  }
+
+  /** Club memberships with a managing role — kept so the console can say where to go instead. */
+  get clubLeaderships() {
+    return this.memberships.filter((m) => MANAGING_ROLES.includes(m.role) && m.org_type === 'club');
+  }
+
+  /** True when the selected organization is a school: that is what turns on the school pages. */
+  get isInstitution() {
+    return this.organization?.org_type === 'institution';
   }
 
   /** Organizations this user owns. Owner-only actions check this, not membership. */
@@ -75,6 +92,8 @@ export class Session {
   }
 
   async restore() {
+    // Coming back from the mock identity provider with ?code= in the URL.
+    if (await this.#completeSso()) return true;
     const stored = readStored();
     if (!stored?.token) return false;
     this.backend.setCredentials({ token: stored.token, refreshToken: stored.refreshToken });
@@ -105,6 +124,68 @@ export class Session {
     const credentials = { token: result.token, refreshToken: result.refreshToken ?? null };
     writeStored({ ...credentials, user: result.user, memberships });
     this.#adopt(result.user, memberships, credentials);
+  }
+
+  /**
+   * SSO, in two halves. The first half leaves the page: it makes a PKCE verifier, keeps it in
+   * sessionStorage, and sends the browser to the identity provider's authorize page. The second
+   * half (#completeSso, run by restore() on the way back) exchanges the returned code with that
+   * verifier. The verifier never appears in a URL — that is the point of PKCE.
+   *
+   * The mock backend has no provider page to visit, so it signs in directly.
+   */
+  async beginSso() {
+    const ssoConfig = await this.backend.ssoConfig();
+    if (!ssoConfig?.enabled) throw new Error('Single sign-on is not available here.');
+    if (config.backend === 'mock') {
+      const result = await this.backend.ssoExchange({});
+      this.#adoptResult(result);
+      return;
+    }
+    const verifier = randomUrlSafe(48);
+    const challenge = await sha256UrlSafe(verifier);
+    const state = randomUrlSafe(16);
+    const redirectUri = `${location.origin}${location.pathname}`;
+    try {
+      sessionStorage.setItem(SSO_KEY, JSON.stringify({ verifier, state, redirectUri }));
+    } catch { throw new Error('This browser is blocking session storage, which sign-in needs.'); }
+    const apiOrigin = new URL(config.apiBaseURL, location.href).origin;
+    const query = new URLSearchParams({
+      response_type: 'code', client_id: 'nostia-console', redirect_uri: redirectUri,
+      code_challenge: challenge, code_challenge_method: 'S256', state,
+    });
+    location.assign(`${apiOrigin}${ssoConfig.authorize_path}?${query}`);
+  }
+
+  async #completeSso() {
+    if (typeof location === 'undefined') return false;
+    const params = new URLSearchParams(location.search);
+    const code = params.get('code');
+    const returnedState = params.get('state');
+    if (!code) return false;
+    let pending = null;
+    try { pending = JSON.parse(sessionStorage.getItem(SSO_KEY) ?? 'null'); } catch { /* ignore */ }
+    try { sessionStorage.removeItem(SSO_KEY); } catch { /* ignore */ }
+    // Whatever happens next, the code comes out of the address bar: a code left in the URL ends
+    // up in history and in any screenshot of the page.
+    params.delete('code');
+    params.delete('state');
+    history.replaceState(null, '', `${location.pathname}${params.toString() ? `?${params}` : ''}${location.hash}`);
+    // The state must be the one this tab sent, or the code was not ours to redeem.
+    if (!pending || pending.state !== returnedState) return false;
+    try {
+      const result = await this.backend.ssoExchange({ code, code_verifier: pending.verifier, redirect_uri: pending.redirectUri });
+      this.#adoptResult(result);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  #adoptResult(result) {
+    const credentials = { token: result.token, refreshToken: result.refreshToken ?? null };
+    writeStored({ ...credentials, user: result.user, memberships: result.memberships ?? [] });
+    this.#adopt(result.user, result.memberships ?? [], credentials);
   }
 
   async signOut() {
@@ -142,6 +223,23 @@ export class Session {
 // sessionStorage, not localStorage: a billing console on a shared or public machine should not
 // leave a usable token behind after the tab closes.
 // ---------------------------------------------------------------------------
+
+function randomUrlSafe(bytes) {
+  const buf = new Uint8Array(bytes);
+  crypto.getRandomValues(buf);
+  return base64Url(buf);
+}
+
+async function sha256UrlSafe(text) {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return base64Url(new Uint8Array(digest));
+}
+
+function base64Url(bytes) {
+  let binary = '';
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
 
 function readStored() {
   try {

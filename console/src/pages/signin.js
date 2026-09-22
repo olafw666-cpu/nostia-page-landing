@@ -30,11 +30,37 @@ export function renderSignIn(root, { session, onSignedIn }) {
     errorSlot,
     submit);
 
+  // Single sign-on, when the server offers it. Today that is only the demo instance's MOCK
+  // provider, and the button says "mock" in words: nobody should read this as a real campus
+  // SSO integration, which is not built.
+  const ssoSlot = el('div');
+  session.backend.ssoConfig?.().then((sso) => {
+    if (!sso?.enabled) return;
+    const button = el('button', { class: 'btn ghost', type: 'button', style: { width: '100%' },
+      text: `${sso.button_label || 'Single sign-on'}${sso.mock ? ' (mock)' : ''}`,
+      onClick: async () => {
+        button.disabled = true;
+        mount(errorSlot);
+        try {
+          await session.beginSso();
+          onSignedIn();
+        } catch (error) {
+          mount(errorSlot, notice('bad', 'Could not sign in', error.message));
+          button.disabled = false;
+        }
+      } });
+    mount(ssoSlot, el('div', { class: 'sso' },
+      el('div', { class: 'divider', text: 'or' }),
+      button,
+      sso.mock ? el('p', { class: 'small muted', text: 'Mock identity provider for the demo — every identity on it is fabricated.' }) : null));
+  }).catch(() => { /* no SSO on this host */ });
+
   const card = el('div', { class: 'card' },
     el('div', { class: 'brand', text: 'NOSTIA', style: { marginBottom: '18px' } },
       el('span', { text: 'Orgs' })),
-    el('p', { text: 'Billing and analytics for the adventures your organization publishes.' }),
-    form);
+    el('p', { text: 'Attendance, clubs and campus programming for your school — and the walking adventures it publishes.' }),
+    form,
+    ssoSlot);
 
   if (config.backend === 'mock') {
     // Reachable via ?backend=mock. Saying so here stops the reasonable assumption that the

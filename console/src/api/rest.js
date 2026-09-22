@@ -231,6 +231,151 @@ export class RestBackend {
     return result.invite_codes ?? [];
   }
 
+  // ---- School layer --------------------------------------------------------
+  // Same rule as everything above: the server decides (who may create a club, whether a club is
+  // locked, what a headcount verdict is); this carries requests and relays answers.
+
+  async ssoConfig() {
+    try {
+      return await this.#json(routes.ssoConfig, { authenticated: false });
+    } catch {
+      // A host without the mock SSO does not have the route at all. That is "off", not an error.
+      return { enabled: false };
+    }
+  }
+
+  async ssoExchange({ code, code_verifier: verifier, redirect_uri: redirectUri }) {
+    const result = await this.#json(routes.ssoToken, {
+      method: 'POST', authenticated: false,
+      body: { code, code_verifier: verifier, redirect_uri: redirectUri },
+    });
+    this.setCredentials({ token: result.token, refreshToken: result.refresh_token });
+    return {
+      token: result.token, refreshToken: result.refresh_token ?? null,
+      user: result.user, memberships: result.memberships ?? [], sso: result.sso ?? null,
+    };
+  }
+
+  async getPolicy(orgId) {
+    return (await this.#json(path(routes.policy, { org: orgId }))).policy;
+  }
+
+  async updatePolicy(orgId, patch) {
+    return (await this.#json(path(routes.policy, { org: orgId }), { method: 'PATCH', body: patch })).policy;
+  }
+
+  listClubs(orgId) {
+    return this.#json(path(routes.clubs, { org: orgId }));
+  }
+
+  async createClub(orgId, fields) {
+    return (await this.#json(path(routes.clubs, { org: orgId }), { method: 'POST', body: fields })).club;
+  }
+
+  async decideClub(orgId, clubId, decision, note) {
+    return (await this.#json(path(routes.clubDecision, { org: orgId, club: clubId }), {
+      method: 'POST', body: { decision, note },
+    })).club;
+  }
+
+  async setClubStatus(orgId, clubId, status, note) {
+    return (await this.#json(path(routes.clubStatus, { org: orgId, club: clubId }), {
+      method: 'POST', body: { status, note },
+    })).club;
+  }
+
+  async listMembers(orgId) {
+    return (await this.#json(path(routes.members, { org: orgId }))).members ?? [];
+  }
+
+  async listEvents(orgId) {
+    return (await this.#json(path(routes.events, { org: orgId }))).events ?? [];
+  }
+
+  async createEvent(orgId, fields) {
+    return (await this.#json(path(routes.events, { org: orgId }), { method: 'POST', body: fields })).event;
+  }
+
+  async cancelEvent(orgId, eventId) {
+    return (await this.#json(path(routes.eventCancel, { org: orgId, event: eventId }), { method: 'POST' })).event;
+  }
+
+  eventAttendance(orgId, eventId) {
+    return this.#json(path(routes.eventAttendance, { org: orgId, event: eventId }));
+  }
+
+  uploadAttendancePhoto(orgId, eventId, file, claimedCount) {
+    const form = new FormData();
+    form.append('photo', file);
+    form.append('claimed_count', String(claimedCount));
+    return this.#json(path(routes.eventPhoto, { org: orgId, event: eventId }), { method: 'POST', form });
+  }
+
+  fileAttendance(orgId, eventId, fields) {
+    return this.#json(path(routes.eventAttendance, { org: orgId, event: eventId }), { method: 'POST', body: fields });
+  }
+
+  openCheckin(orgId, eventId) {
+    return this.#json(path(routes.eventCheckinCode, { org: orgId, event: eventId }), { method: 'POST' });
+  }
+
+  waiveAttendance(orgId, eventId, note) {
+    return this.#json(path(routes.eventWaive, { org: orgId, event: eventId }), { method: 'POST', body: { note } });
+  }
+
+  attendanceCompliance(orgId) {
+    return this.#json(path(routes.compliance, { org: orgId }));
+  }
+
+  attendanceAnalytics(orgId, category) {
+    return this.#json(path(routes.attendanceAnalytics, { org: orgId }) + `?category=${encodeURIComponent(category)}`);
+  }
+
+  studentAttendance(orgId) {
+    return this.#json(path(routes.attendanceStudents, { org: orgId }));
+  }
+
+  studentDetail(orgId, userId) {
+    return this.#json(path(routes.attendanceStudent, { org: orgId, user: userId }));
+  }
+
+  async exportAttendanceCSV(orgId, category) {
+    const response = await this.#raw(path(routes.attendanceCSV, { org: orgId }) + `?category=${encodeURIComponent(category)}`);
+    return { blob: await response.blob(), filename: `attendance-${category}.csv` };
+  }
+
+  getSurvey(orgId, category) {
+    return this.#json(path(routes.survey, { org: orgId }) + `?category=${encodeURIComponent(category)}`);
+  }
+
+  updateSurvey(orgId, category, questions) {
+    return this.#json(path(routes.survey, { org: orgId }), { method: 'PATCH', body: { category, questions } });
+  }
+
+  async listModeration(orgId) {
+    return (await this.#json(path(routes.moderation, { org: orgId }))).messages ?? [];
+  }
+
+  hideChatMessage(orgId, messageId, reason) {
+    return this.#json(path(routes.moderationHide, { org: orgId, message: messageId }), { method: 'POST', body: { reason } });
+  }
+
+  listOutbox(orgId) {
+    return this.#json(path(routes.outbox, { org: orgId }));
+  }
+
+  previewOutbox(orgId, audience) {
+    return this.#json(path(routes.outboxPreview, { org: orgId }), { method: 'POST', body: { audience } });
+  }
+
+  async sendOutbox(orgId, fields) {
+    return (await this.#json(path(routes.outbox, { org: orgId }), { method: 'POST', body: fields })).message;
+  }
+
+  async loadOutbox(orgId, messageId) {
+    return (await this.#json(path(routes.outboxMessage, { org: orgId, message: messageId }))).message;
+  }
+
   // ---- Transport ---------------------------------------------------------
 
   async #json(route, options = {}) {

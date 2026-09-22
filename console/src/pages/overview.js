@@ -35,6 +35,30 @@ export async function renderOverview(root, { session, navigate }) {
   page.append(el('h1', { text: session.organization?.name ?? 'Overview' }));
   page.append(el('p', { class: 'lede', text: 'Published adventures and how they are performing.' }));
 
+  // A school gets the attendance picture first: it is the reason the school is here.
+  if (session.isInstitution) {
+    try {
+      const [board, clubs] = await Promise.all([
+        session.backend.attendanceCompliance(orgId),
+        session.backend.listClubs(orgId),
+      ]);
+      const pending = clubs.clubs.filter((c) => c.status === 'pending').length;
+      const s = board.summary;
+      page.append(section('This week at a glance', null, el('div', { class: 'grid grid-4' },
+        metric({ label: 'Active clubs', value: clubs.clubs.filter((c) => c.status === 'active').length, caption: pending ? `${pending} waiting for approval` : 'none waiting' }),
+        metric({ label: 'Clubs locked', value: s.locked, caption: 'overdue on attendance' }),
+        metric({ label: 'Open to file', value: s.open_events, caption: 'club events' }),
+        metric({ label: 'Flagged photos', value: s.flagged, caption: 'to review' }))));
+      if (s.locked || s.flagged || pending) {
+        page.append(notice('warn', 'Needs a look',
+          [s.locked && `${s.locked} club${s.locked === 1 ? ' is' : 's are'} locked for overdue attendance`,
+            s.flagged && `${s.flagged} headcount${s.flagged === 1 ? '' : 's'} flagged for review`,
+            pending && `${pending} club request${pending === 1 ? '' : 's'} waiting`].filter(Boolean).join(' · '),
+          { label: 'Open attendance', onClick: () => navigate('attendance') }));
+      }
+    } catch { /* the rest of the overview still renders */ }
+  }
+
   if (billing?.status === 'past_due') {
     // Worth stating precisely rather than as a generic warning: the org's live content is not at
     // risk, and knowing that changes how urgently they treat it.
