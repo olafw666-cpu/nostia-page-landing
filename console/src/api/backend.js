@@ -1,6 +1,4 @@
-import { config } from '../config.js';
 import { RestBackend } from './rest.js';
-import { MockBackend } from './mock.js';
 
 /**
  * **The seam.** Every page talks to an object with this shape and nothing else — no page calls
@@ -45,9 +43,10 @@ import { MockBackend } from './mock.js';
  * listOutbox / previewOutbox / sendOutbox / loadOutbox
  * ```
  *
- * Two implementations satisfy it: `RestBackend` (HTTP, speaking docs/BACKEND_CONTRACT.md) and
- * `MockBackend` (in-memory). The pages cannot tell which one they are running on — which is the
- * test that the abstraction is real rather than decorative.
+ * `RestBackend` (HTTP, speaking docs/BACKEND_CONTRACT.md) is the only one the console loads. An
+ * in-memory `MockBackend` with the same methods lives in scripts/console-fixtures/ for the smoke
+ * test, outside public/ so it is never published (it was the ?backend=mock sample tour until
+ * 2026-10-06).
  *
  * Adopting a different backend:
  *   same shapes, different URLs → edit src/api/routes.js
@@ -55,5 +54,5 @@ import { MockBackend } from './mock.js';
  *   not HTTP at all             → write a third object with these methods
  */
 export function makeBackend() {
-  return config.backend === 'rest' ? new RestBackend() : new MockBackend();
+  return new RestBackend();
 }

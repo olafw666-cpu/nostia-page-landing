@@ -138,9 +138,7 @@ function sidebar(route) {
         onClick: async () => { await session.signOut(); render(); },
       }),
       el('div', { style: { marginTop: '10px' } },
-        config.backend === 'mock'
-          ? 'Sample data · no server connected'
-          : el('code', { text: config.apiBaseURL }))));
+        el('code', { text: config.apiBaseURL }))));
 }
 
 // ---------------------------------------------------------------------------

@@ -131,17 +131,10 @@ export class Session {
    * sessionStorage, and sends the browser to the identity provider's authorize page. The second
    * half (#completeSso, run by restore() on the way back) exchanges the returned code with that
    * verifier. The verifier never appears in a URL — that is the point of PKCE.
-   *
-   * The mock backend has no provider page to visit, so it signs in directly.
    */
   async beginSso() {
     const ssoConfig = await this.backend.ssoConfig();
     if (!ssoConfig?.enabled) throw new Error('Single sign-on is not available here.');
-    if (config.backend === 'mock') {
-      const result = await this.backend.ssoExchange({});
-      this.#adoptResult(result);
-      return;
-    }
     const verifier = randomUrlSafe(48);
     const challenge = await sha256UrlSafe(verifier);
     const state = randomUrlSafe(16);

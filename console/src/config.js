@@ -1,22 +1,11 @@
 /**
  * Every environment-dependent value in the console. Nothing else holds a URL literal.
  *
- * `backend` is the switch between the in-memory sample data and a real server. A backend IS
- * now deployed (org.nostia.io), so `rest` is the default — the previous `mock` default existed
- * only because there was nothing to talk to.
+ * There is no backend switch. Until 2026-10-06 the ?backend=mock query swapped in an in-memory sample
+ * backend for a demo tour; that mode was removed, and the demo is shown by signing a real account
+ * into org.nostia.io. The console always talks to a real server.
  */
 export const config = {
-  /**
-   * 'rest' | 'mock' — overridable at runtime with ?backend=mock, which is how the sample data
-   * is demoed without a server and without an account.
-   *
-   * Guarded for the non-browser case so the API layer can be imported by the smoke test, which
-   * runs in Node with no DOM.
-   */
-  backend: (typeof location !== 'undefined'
-    ? new URLSearchParams(location.search).get('backend')
-    : null) || 'rest',
-
   /**
    * Base URL for the REST backend. Routes in src/api/routes.js are appended to it.
    *
@@ -26,9 +15,11 @@ export const config = {
    */
   //
   // ONE exception, and it is still this file deciding: when the console is served by a backend
-  // host itself (the demo instance serves its own copy at /console/), that host injects
+  // host itself (routes/consoleHost.js, when CONSOLE_DIR is set; no host does today), that host injects
   // <meta name="nostia-api-base" content="/api"> and the console talks to the host that served
   // it. On nostia.io there is no such tag and nothing changes.
+  // Guarded for the non-browser case so the API layer can be imported by the smoke test, which
+  // runs in Node with no DOM.
   apiBaseURL: (typeof document !== 'undefined'
     && document.querySelector('meta[name="nostia-api-base"]')?.getAttribute('content'))
     || 'https://org.nostia.io/api',

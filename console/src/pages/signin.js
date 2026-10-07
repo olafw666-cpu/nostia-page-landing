@@ -30,9 +30,10 @@ export function renderSignIn(root, { session, onSignedIn }) {
     errorSlot,
     submit);
 
-  // Single sign-on, when the server offers it. Today that is only the demo instance's MOCK
-  // provider, and the button says "mock" in words: nobody should read this as a real campus
-  // SSO integration, which is not built.
+  // Single sign-on, when the server offers it. No server does today: the only provider was the
+  // retired demo instance's MOCK one (off since 2026-10-06), and org.nostia.io answers 404, which
+  // rest.js reads as "off". If a mock is ever on again, the button says "mock" in words: nobody
+  // should read it as a real campus SSO integration, which is not built.
   const ssoSlot = el('div');
   session.backend.ssoConfig?.().then((sso) => {
     if (!sso?.enabled) return;
@@ -62,22 +63,13 @@ export function renderSignIn(root, { session, onSignedIn }) {
     form,
     ssoSlot);
 
-  if (config.backend === 'mock') {
-    // Reachable via ?backend=mock. Saying so here stops the reasonable assumption that the
-    // numbers on the next screen came from somewhere real.
-    card.append(notice('info', 'Sample data',
-      'This is the demo tour — any email and password will do, and every figure is invented. '
-      + 'Drop the ?backend=mock from the URL to sign in to your real organization.'));
-  } else {
-    // There is no self-serve signup: accounts are provisioned per organization. Without this,
-    // a buyer's first experience of the console is a sign-in form with no way in.
-    card.append(notice('info', 'No account yet?',
-      'Organization accounts are set up with you directly rather than self-serve.'),
-    el('p', { class: 'signin-links' },
-      el('a', { href: config.salesContact, text: 'Talk to us' }),
-      el('span', { class: 'sep', text: '·' }),
-      el('a', { href: '?backend=mock', text: 'See a demo' })));
-  }
+  // There is no self-serve signup: accounts are provisioned per organization. Without this,
+  // a buyer's first experience of the console is a sign-in form with no way in. (A "See a demo"
+  // link to ?backend=mock sat here until 2026-10-06; the demo is now a real sign-in.)
+  card.append(notice('info', 'No account yet?',
+    'Organization accounts are set up with you directly rather than self-serve.'),
+  el('p', { class: 'signin-links' },
+    el('a', { href: config.salesContact, text: 'Talk to us' })));
 
   mount(root, el('div', { class: 'signin' }, card));
 }
