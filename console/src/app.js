@@ -55,7 +55,8 @@ function navigate(name, params = {}) {
 
 async function render() {
   if (!session.isSignedIn) {
-    renderSignIn(root, { session, onSignedIn: render });
+    renderSignIn(root, { session, onSignedIn: render, notice: idleNotice });
+    idleNotice = null;
     return;
   }
 
@@ -147,6 +148,52 @@ function sidebar(route) {
 
 window.addEventListener('hashchange', render);
 
+// ---------------------------------------------------------------------------
+// Idle sign-out (SEC-36, 2026-10-09). A school administrator's console left open on a shared
+// machine signs itself out after 30 minutes with no input. The last activity time is kept in
+// sessionStorage, so a reload after a long absence does not quietly resume the session; the
+// server-side refresh token is revoked by signOut() like any other sign-out.
+// ---------------------------------------------------------------------------
+const IDLE_MS = 30 * 60 * 1000;
+const ACTIVITY_KEY = 'nostia.console.lastActivity';
+let idleNotice = null;
+let lastActivity = Date.now();
+
+function readActivity() {
+  try { return Number(sessionStorage.getItem(ACTIVITY_KEY)) || 0; } catch { return 0; }
+}
+function noteActivity() {
+  const now = Date.now();
+  // At most every 15 seconds: storage writes on every keypress buy nothing.
+  if (now - lastActivity < 15000) return;
+  lastActivity = now;
+  try { sessionStorage.setItem(ACTIVITY_KEY, String(now)); } catch { /* storage blocked: memory only */ }
+}
+/** @returns {Promise<boolean>} true when it signed out (and has already rendered the sign-in page). */
+async function signOutIfIdle() {
+  const last = Math.max(lastActivity, readActivity());
+  if (session.isSignedIn && Date.now() - last > IDLE_MS) {
+    await session.signOut();
+    idleNotice = 'You were signed out after 30 minutes without activity.';
+    await render();
+    return true;
+  }
+  return false;
+}
+for (const evt of ['pointerdown', 'keydown', 'wheel', 'touchstart']) {
+  window.addEventListener(evt, noteActivity, { passive: true });
+}
+setInterval(signOutIfIdle, 60 * 1000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) signOutIfIdle(); });
+
 mount(root, el('div', { class: 'signin' }, el('div', { class: 'card' }, spinner('Starting'))));
 await session.restore();
-await render();
+// A restored session that went idle in a closed tab or a sleeping laptop ends here.
+lastActivity = readActivity() || Date.now();
+if (!(await signOutIfIdle())) {
+  if (session.isSignedIn) {
+    try { sessionStorage.setItem(ACTIVITY_KEY, String(Date.now())); } catch { /* memory only */ }
+    lastActivity = Date.now();
+  }
+  await render();
+}

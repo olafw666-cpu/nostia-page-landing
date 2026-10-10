@@ -165,13 +165,14 @@ function openPrintView({ svg, code, grantsMembership, dead }) {
     <p class="hint">No camera? Enter the code in the Nostia app.</p>
     ${code.universal_link ? `<p class="link">${esc(code.universal_link)}</p>` : ''}
   </div>
-  <script>
-    // Print once the SVG has laid out. Printing from the same tick gives Chrome
-    // an empty page often enough to matter.
-    window.addEventListener('load', function () { setTimeout(function () { window.print(); }, 120); });
-  <\/script>
 </body></html>`);
   win.document.close();
+  // Printed from HERE, not by a script inside the sheet. The sheet is an about:blank window, which
+  // inherits the console's CSP, and since the console moved onto org.nostia.io (SEC-36) that
+  // policy allows no inline script, so a script element in the sheet would silently never run. The
+  // pause lets the SVG lay out first: printing on the same tick gives Chrome an empty page often
+  // enough to matter.
+  setTimeout(() => { win.focus(); win.print(); }, 250);
 }
 
 /** Grouped in fours, the way it reads on a printed sign. */

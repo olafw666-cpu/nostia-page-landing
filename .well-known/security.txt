@@ -1,0 +1,16 @@
+Contact: mailto:security@nostia.io
+Expires: 2027-09-30T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://nostia.io/.well-known/security.txt
+Policy: https://org.nostia.io/.well-known/disclosure-policy
+
+# Coordinated disclosure for nostia.io (this site and the console at
+# https://org.nostia.io/console/) and for org.nostia.io. We will acknowledge
+# within 5 business days and aim to remediate before public disclosure at 90
+# days. Testing in good faith under the policy will not be pursued legally.
+#
+# Out of scope: api.nostia.io is a separate deployment and is NOT covered by
+# this file. Do not test it under this policy.
+#
+# This file is static (GitHub Pages), so its Expires date is fixed: renew it
+# before 2027-09-30. org.nostia.io serves a copy whose Expires is computed.

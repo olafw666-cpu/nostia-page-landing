@@ -2,8 +2,10 @@ import { el, mount } from '../ui/dom.js';
 import { notice } from '../ui/components.js';
 import { config } from '../config.js';
 
-export function renderSignIn(root, { session, onSignedIn }) {
-  const errorSlot = el('div');
+/** `notice`: a line to show above the form, e.g. why the console signed out on its own. */
+export function renderSignIn(root, { session, onSignedIn, notice: reason = null }) {
+  // Seeded with the reason when there is one; a sign-in error replaces it.
+  const errorSlot = el('div', {}, reason ? notice('info', 'Signed out', reason) : null);
 
   const email = el('input', { type: 'email', name: 'email', autocomplete: 'username', required: true });
   const password = el('input', { type: 'password', name: 'password', autocomplete: 'current-password', required: true });
