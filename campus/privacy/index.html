@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy Policy — Nostia Campus</title>
+  <meta name="description" content="How Nostia Campus handles your information: what is collected, who sees it, the automated photo checks, retention and deletion.">
+  <link rel="canonical" href="https://nostia.io/campus/privacy/">
+  <link rel="icon" type="image/png" href="/logo192.png">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #ffffff;
+      color: #111111;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 2.5rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container { width: 100%; max-width: 800px; }
+    .back { display: inline-block; color: #444444; text-decoration: none; font-size: 0.9rem; margin-bottom: 2.5rem; }
+    .back:hover { color: #111111; }
+    h1 { font-family: Georgia, Cambria, "Times New Roman", serif; font-size: clamp(1.75rem, 5vw, 2.5rem);
+      font-weight: 700; text-align: center; margin-bottom: 0.5rem; }
+    .subtitle { color: #444444; text-align: center; margin-bottom: 0.4rem; font-size: 0.95rem; }
+    .effective { color: #6B7280; text-align: center; margin-bottom: 2.5rem; font-size: 0.85rem; }
+    .section { background: #F8F9FA; border: 1px solid #DDDDDD; border-radius: 0.625rem;
+      padding: 1.5rem 1.75rem; margin-bottom: 1.25rem; }
+    h2 { font-family: Georgia, Cambria, "Times New Roman", serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.6rem; }
+    p, li { color: #444444; line-height: 1.75; font-size: 0.95rem; }
+    p + p, p + ul, ul + p, ol + p, p + ol { margin-top: 0.85rem; }
+    ul, ol { padding-left: 1.3rem; }
+    li + li { margin-top: 0.35rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 0.6rem; }
+    th, td { text-align: left; vertical-align: top; padding: 0.5rem 0.4rem; border-top: 1px solid #DDDDDD; color: #444444; }
+    th { color: #111111; font-weight: 600; }
+    a.inline { color: #2E7D32; text-decoration: none; }
+    a.inline:hover { text-decoration: underline; }
+    nav.campus { text-align: center; font-size: 0.85rem; margin-bottom: 2rem; }
+    nav.campus a { color: #2E7D32; text-decoration: none; margin: 0 0.5rem; }
+    footer { margin-top: 3.5rem; color: #6B7280; font-size: 0.8rem; text-align: center; }
+    @media (max-width: 480px) { .section { padding: 1.25rem 1.1rem; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="/">&#8592; Back to Nostia</a>
+
+    <h1>Privacy Policy</h1>
+    <p class="subtitle">For Nostia Campus, the app for school events, clubs and campus walks</p>
+    <!-- Written from nostia-pivot docs/PRIVACY_POLICY_DRAFT.md and docs/DATA_INVENTORY.md, with the open
+         decisions filled in on 2026-10-16. Every statement describes what the code does; change them together. -->
+    <p class="effective">Effective October 16, 2026</p>
+    <nav class="campus"><a href="/campus/terms/">Terms of Use</a> &middot; <a href="/campus/privacy/">Privacy Policy</a> &middot; <a href="/campus/support/">Support</a> &middot; <a href="/campus/delete-account/">Delete your account</a></nav>
+
+    <div class="section">
+      <h2>Who this covers</h2>
+      <p>This policy covers <strong>Nostia Campus</strong>: the iPhone and Android apps, the service at <code>org.nostia.io</code>, and the web console schools use at <code>org.nostia.io/console/</code>. It does not cover the separate consumer Nostia app, which has its own policy.</p>
+      <p>Nostia Campus is run by Nostia LLC, Exeter, New Hampshire, USA. Questions and requests about your information: <a class="inline" href="mailto:nostiaexecutive@nostia.io?subject=Privacy%20request">nostiaexecutive@nostia.io</a>.</p>
+    </div>
+    <div class="section">
+      <h2>What we collect</h2>
+      <p><strong>Your account.</strong> A username, an email address and a password, stored only as a salted scrypt hash. If you add a passkey we store its public key and a device name. We never receive your fingerprint or face: that check happens on your phone.</p>
+      <p><strong>Your memberships.</strong> Which schools and clubs you belong to, and your role in each.</p>
+      <p><strong>Events and attendance.</strong> Your RSVPs, your check-ins to events (with the time) and any answers you give in an event's short survey. Club leaders also file how many people attended.</p>
+      <p><strong>Club chat and messages.</strong> Messages you post in a club's chat, people you block, and reports you make. Messages a club or school sends you appear in your in-app inbox; nothing is sent by email.</p>
+      <p><strong>What you do on a walk.</strong> That you started a walk, which stops you completed and when, photo attempts, points and any rating you give.</p>
+      <p><strong>Your location, only during a walk.</strong> While a walk stop is open on your screen, the app sends your position so we can check you are inside the stop's area for long enough. The app never asks for background location. The positions for a stop are deleted as soon as that stop is verified; we keep the distance from the stop and the number of position checks, not where you were.</p>
+      <p><strong>Photos.</strong> Some walk stops ask for a photo, and a club leader may photograph the room so attendance can be estimated. These photos are checked automatically (see below) and are <strong>never stored</strong>: we keep a fingerprint of the file, the verdict or estimated count, and a short reason. Location data embedded in a photo is removed before it leaves our server.</p>
+      <p><strong>Security records.</strong> Sign-ins, failed sign-ins, passkey changes and invite-code redemptions are logged with the time and IP address, so misuse can be detected. For a failed sign-in we keep a non-reversible tag of what was typed, not the email itself.</p>
+    </div>
+    <div class="section">
+      <h2>What we do not collect</h2>
+      <ul><li>No date of birth, student ID, class roster or records from your school's systems.</li><li>No home address or phone number.</li><li>No payment details. Nothing is bought in the app; schools pay on the web.</li><li>No biometric identifiers: no face detection or facial recognition, ever.</li><li>No advertising, no advertising identifiers and no third-party analytics or tracking.</li></ul>
+    </div>
+    <div class="section">
+      <h2>How we use it</h2>
+      <p>To run your school's events, clubs, check-ins and walks; to verify walk stops; to show organizers the results they are entitled to see; to keep accounts and chats safe, including reviewing reports; and to fix problems. We do not sell personal information and we do not use it for advertising.</p>
+    </div>
+    <div class="section">
+      <h2>Automated photo checks</h2>
+      <p>Walk-stop photos and room photos are checked by <strong>Anthropic</strong>'s Claude models through Anthropic's commercial API. For a walk stop, Anthropic receives the photo, the organizer's reference photo of the place (if there is one) and the organizer's description of the stop. For a room photo it receives only the photo, and returns an estimated number of people; it never identifies anyone. The app asks a club leader to agree before a room photo is sent.</p>
+      <p>Under Anthropic's commercial terms, data sent through its API is not used to train its models and is kept by Anthropic only as those terms allow. We do not store the photo. An organizer can choose walk stops that need no photo.</p>
+    </div>
+    <div class="section">
+      <h2>Who can see what</h2>
+      <ul><li><strong>You</strong> see your own account, memberships, events, walks and messages.</li><li><strong>Club leaders and officers</strong> see who checked in to their own club's events and the survey answers, their club's members and join requests, and their club's chat, including moderation.</li><li><strong>Your school's administrators</strong> see, where the school requires attendance, which events each student checked in to, and walk statistics only in aggregate, with small groups withheld so no one is singled out.</li><li><strong>Other members of a club</strong> see that club's chat messages, except between people who have blocked each other.</li><li><strong>No organization ever sees your location.</strong> Organizers see whether a stop was completed, never a position.</li><li><strong>Nostia</strong> staff with server access can see stored data to operate the service, review reports and keep it secure.</li></ul>
+    </div>
+    <div class="section">
+      <h2>Reports, blocking and our review</h2>
+      <p>You can report a chat message or an inbox message, choosing a reason, and you can block a person; neither sees the other's chat messages after that, and they are not told. Each report reaches the club's officers, your school's administrators and Nostia, and Nostia reviews reports within 24 hours. We keep a record of each report and what was done about it.</p>
+    </div>
+    <div class="section">
+      <h2>Service providers</h2>
+      <table><tr><th>Provider</th><th>What for</th><th>What it receives</th></tr><tr><td>Microsoft Azure</td><td>Hosting, in the North Central US region</td><td>All stored data, encrypted at rest</td></tr><tr><td>Anthropic</td><td>Photo checks</td><td>As described above</td></tr><tr><td>Google</td><td>Android app distribution, location services, maps and passkeys on Android</td><td>Device and location data handled by Google Play services under Google's terms; map views</td></tr><tr><td>Apple</td><td>iPhone app distribution and passkeys on iPhone</td><td>Device-level data under Apple's terms</td></tr><tr><td>GitHub</td><td>Hosting this website and the console's files</td><td>No personal data</td></tr><tr><td>Stripe</td><td>Billing schools, on the web</td><td>A school's billing details; no student data</td></tr></table>
+    </div>
+    <div class="section">
+      <h2>How long we keep it</h2>
+      <ul><li>Positions during a walk: deleted when the stop is verified.</li><li>Photos and room photos: never stored.</li><li>Your account, memberships, messages, RSVPs and check-ins: while your account exists. When you delete your account they are deleted (see below).</li><li>Walk and attendance totals: kept as anonymous numbers that no longer identify you.</li><li>Server backups: overwritten within 14 days.</li><li>Security records: kept so that misuse can be investigated; you can ask us to delete them.</li></ul>
+    </div>
+    <div class="section">
+      <h2>Deleting your account and your other rights</h2>
+      <p>Delete your account in the app: <strong>You &rarr; Account and legal &rarr; Delete account</strong>. It asks for your password and then deletes your name, email, password and passkeys, your memberships, your chat messages, your RSVPs and check-ins, your blocks and your notifications. Walks you completed stay in schools' totals as anonymous numbers. If you lead a club, it passes to its longest-serving officer, or is paused until your school names a new leader. More, including how to ask by email: <a class="inline" href="/campus/delete-account/">nostia.io/campus/delete-account</a>.</p>
+      <p>You can also ask to see, correct or delete your information by writing to <a class="inline" href="mailto:nostiaexecutive@nostia.io?subject=Privacy%20request">nostiaexecutive@nostia.io</a> from the email address on your account. We answer within 30 days. If your school uses Nostia Campus for required attendance, those records may also be education records held for your school, and some requests may need to go through your school.</p>
+      <p>You can turn location off at any time in your phone's settings; walk stops that need location will then not verify.</p>
+    </div>
+    <div class="section">
+      <h2>Young people</h2>
+      <p>Nostia Campus is not for children under 13. Accounts are created only with an invite code from a school or club. A person under 18 may use it only through a school or club that has given them access, and the school is responsible for any consent its own rules require.</p>
+    </div>
+    <div class="section">
+      <h2>Security</h2>
+      <p>Connections are encrypted (TLS 1.2 or newer, with HSTS) and stored data is encrypted at rest. Passwords are hashed with scrypt and passkeys add a second factor. On your phone, your session is kept in the iOS Keychain or Android Keystore and is not included in device backups. Access to every school's and club's data is checked on the server for every request. Report a security issue to <a class="inline" href="mailto:security@nostia.io">security@nostia.io</a>.</p>
+    </div>
+    <div class="section">
+      <h2>Changes to this policy</h2>
+      <p>We will post changes here with a new effective date, and for a material change we will tell you in the app at least 30 days before it applies.</p>
+    </div>
+
+    <footer>&copy; 2026 NOSTIA LLC &middot; Exeter, New Hampshire. All Rights Reserved.</footer>
+  </div>
+</body>
+</html>
